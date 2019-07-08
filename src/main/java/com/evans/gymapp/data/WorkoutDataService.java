@@ -6,6 +6,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class WorkoutDataService {
@@ -15,6 +17,10 @@ public class WorkoutDataService {
 
     public Iterable<WorkoutDto> getAllWorkouts() {
         return workoutRepository.findAll();
+    }
+
+    public Optional<WorkoutDto> getWorkout(long workoutId) {
+        return workoutRepository.findById(workoutId);
     }
 
     public void addWorkout(WorkoutDto workout) {
