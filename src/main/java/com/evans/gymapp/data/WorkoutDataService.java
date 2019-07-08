@@ -1,6 +1,6 @@
 package com.evans.gymapp.data;
 
-import com.evans.gymapp.domain.Workout;
+import com.evans.gymapp.data.object.WorkoutDto;
 import com.evans.gymapp.repo.WorkoutRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +13,11 @@ public class WorkoutDataService {
     @NonNull
     private final WorkoutRepository workoutRepository;
 
-    public Iterable<Workout> getAllWorkouts() {
+    public Iterable<WorkoutDto> getAllWorkouts() {
         return workoutRepository.findAll();
     }
 
-    public void addWorkout(Workout workout) {
+    public void addWorkout(WorkoutDto workout) {
         workoutRepository.save(workout);
     }
 
