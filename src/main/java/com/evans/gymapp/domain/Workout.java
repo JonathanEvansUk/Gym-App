@@ -9,4 +9,5 @@ public class Workout {
 
     private final List<Exercise> exercises;
     private final WorkoutType workoutType;
+    private final String name;
 }
