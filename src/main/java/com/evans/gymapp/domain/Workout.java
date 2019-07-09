@@ -1,13 +1,15 @@
 package com.evans.gymapp.domain;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@Builder
 @RequiredArgsConstructor
 public class Workout {
 
-    private final List<Exercise> exercises;
-    private final WorkoutType workoutType;
     private final String name;
+    private final WorkoutType workoutType;
+    private final List<Exercise> exercises;
 }

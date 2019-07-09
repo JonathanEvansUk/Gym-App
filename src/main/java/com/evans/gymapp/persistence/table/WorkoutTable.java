@@ -1,6 +1,9 @@
-package com.evans.gymapp.data.object;
+package com.evans.gymapp.persistence.table;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +14,7 @@ import javax.persistence.Id;
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class WorkoutDto {
+public class WorkoutTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,5 +22,7 @@ public class WorkoutDto {
 
     @NonNull
     private String name;
-    //private List<ExerciseDto>
+
+//    @NonNull
+//    private List<ExerciseTable> exercises;
 }

@@ -1,13 +1,15 @@
 package com.evans.gymapp.controller;
 
-import com.evans.gymapp.data.WorkoutDataService;
-import com.evans.gymapp.data.object.WorkoutDto;
+import com.evans.gymapp.domain.Workout;
+import com.evans.gymapp.persistence.service.WorkoutDataService;
+import com.evans.gymapp.persistence.table.WorkoutTable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,9 +20,9 @@ public class WorkoutController {
     private final WorkoutDataService workoutDataService;
 
     @GetMapping("/workouts")
-    public Iterable<WorkoutDto> getAllWorkouts() {
+    public List<Workout> getAllWorkouts() {
 
-        Iterable<WorkoutDto> allWorkouts = workoutDataService.getAllWorkouts();
+        List<Workout> allWorkouts = workoutDataService.getAllWorkouts();
 
         return allWorkouts;
     }
@@ -32,8 +34,8 @@ public class WorkoutController {
     }
 
     @GetMapping("/workouts/{workoutId}")
-    public ResponseEntity<WorkoutDto> getWorkout(@PathVariable long workoutId) {
-        Optional<WorkoutDto> workoutDto = workoutDataService.getWorkout(workoutId);
+    public ResponseEntity<WorkoutTable> getWorkout(@PathVariable long workoutId) {
+        Optional<WorkoutTable> workoutDto = workoutDataService.getWorkout(workoutId);
 
         return workoutDto
                 .map(workout -> ResponseEntity.ok().body(workout))
@@ -50,15 +52,16 @@ public class WorkoutController {
     @GetMapping("/add")
     public void addSomeWorkouts() {
 
-        WorkoutDto workout1 = new WorkoutDto("leg");
-        WorkoutDto workout2 = new WorkoutDto("chest");
-        WorkoutDto workout3 = new WorkoutDto("back");
+        WorkoutTable workout1 = new WorkoutTable("leg");
+        WorkoutTable workout2 = new WorkoutTable("chest");
+        WorkoutTable workout3 = new WorkoutTable("back");
 
         workoutDataService.addWorkout(workout1);
         workoutDataService.addWorkout(workout2);
         workoutDataService.addWorkout(workout3);
     }
 
-    public class ResourceNotFoundException extends RuntimeException { }
+    public class ResourceNotFoundException extends RuntimeException {
+    }
 
 }
