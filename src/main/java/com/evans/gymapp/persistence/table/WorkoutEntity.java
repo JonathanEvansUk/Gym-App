@@ -5,16 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class WorkoutTable {
+public class WorkoutEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +21,8 @@ public class WorkoutTable {
     @NonNull
     private String name;
 
-//    @NonNull
-//    private List<ExerciseTable> exercises;
+    @NonNull
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn
+    private List<ExerciseEntity> exercises;
 }
