@@ -14,15 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkoutEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @NonNull
-    private String name;
+  @NonNull
+  private String name;
 
-    @NonNull
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn
-    private List<ExerciseEntity> exercises;
+  @NonNull
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn
+  private List<ExerciseEntity> exercises;
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Workout {
 
-    private final String name;
-    private final WorkoutType workoutType;
-    private final List<Exercise> exercises;
+  private final String name;
+  private final WorkoutType workoutType;
+  private final List<Exercise> exercises;
 }

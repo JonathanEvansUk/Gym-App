@@ -1,6 +1,9 @@
 package com.evans.gymapp.persistence.table;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,11 +16,11 @@ import javax.persistence.Id;
 @RequiredArgsConstructor
 public class ExerciseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @NonNull
-    private String name;
+  @NonNull
+  private String name;
 
 }
