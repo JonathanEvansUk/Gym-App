@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 @Component
 @RequiredArgsConstructor
-public class WorkoutDataService {
+public class WorkoutDataService implements IWorkoutDataService {
 
   @NonNull
   private final WorkoutRepository workoutRepository;
@@ -35,24 +35,50 @@ public class WorkoutDataService {
     workoutRepository.saveAll(Arrays.asList(workoutEntity1, workoutEntity2));
   }
 
+  @Override
+  //TODO maybe return boolean to indicate successful creation?
+  public void addWorkout(Workout workout) {
+    WorkoutEntity workoutEntity = toWorkoutEntity(workout);
+
+    workoutRepository.save(workoutEntity);
+  }
+
+  @Override
   public List<Workout> getAllWorkouts() {
     return StreamSupport.stream(workoutRepository.findAll().spliterator(), false)
         .map(this::toWorkout)
         .collect(Collectors.toList());
   }
 
-  public Optional<WorkoutEntity> getWorkout(long workoutId) {
-    return workoutRepository.findById(workoutId);
-  }
-
-  public void addWorkout(WorkoutEntity workout) {
-    workoutRepository.save(workout);
+  @Override
+  public Optional<Workout> getWorkout(long workoutId) {
+    return workoutRepository.findById(workoutId)
+        .map(this::toWorkout);
   }
 
   private Workout toWorkout(WorkoutEntity workoutEntity) {
     return Workout.builder()
         .name(workoutEntity.getName())
         .exercises(convertExerciseEntities(workoutEntity.getExercises()))
+        .build();
+  }
+
+  private WorkoutEntity toWorkoutEntity(Workout workout) {
+    return WorkoutEntity.builder()
+        .name(workout.getName())
+        .exercises(convertExercises(workout.getExercises()))
+        .build();
+  }
+
+  private List<ExerciseEntity> convertExercises(List<Exercise> exercises) {
+    return exercises.stream()
+        .map(this::toExerciseEntity)
+        .collect(Collectors.toList());
+  }
+
+  private ExerciseEntity toExerciseEntity(Exercise exercise) {
+    return ExerciseEntity.builder()
+        .name(exercise.getName())
         .build();
   }
 

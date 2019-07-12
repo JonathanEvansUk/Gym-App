@@ -1,15 +1,13 @@
 package com.evans.gymapp.persistence.table;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class WorkoutEntity {
