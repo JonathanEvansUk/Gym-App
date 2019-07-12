@@ -1,4 +1,14 @@
 package com.evans.gymapp.persistence.service;
 
-public class IExerciseDataService {
+import com.evans.gymapp.domain.Exercise;
+
+import java.util.List;
+
+public interface IExerciseDataService {
+
+  void addExercise(Exercise exercise);
+
+  void deleteExercise(Exercise exercise);
+
+  List<Exercise> getAllExercises();
 }

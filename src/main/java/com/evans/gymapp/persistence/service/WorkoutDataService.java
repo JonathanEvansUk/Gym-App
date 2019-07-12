@@ -7,7 +7,7 @@ import com.evans.gymapp.persistence.table.ExerciseEntity;
 import com.evans.gymapp.persistence.table.WorkoutEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class WorkoutDataService implements IWorkoutDataService {
 
