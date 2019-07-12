@@ -11,5 +11,7 @@ public interface IWorkoutDataService {
 
   List<Workout> getAllWorkouts();
 
-  Optional<Workout> getWorkout(long id);
+  Optional<Workout> getWorkout(long workoutId);
+
+  Optional<Workout> getWorkout(String workoutName);
 }

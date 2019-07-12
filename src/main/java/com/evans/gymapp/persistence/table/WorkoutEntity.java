@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class WorkoutEntity {
 
   @Id

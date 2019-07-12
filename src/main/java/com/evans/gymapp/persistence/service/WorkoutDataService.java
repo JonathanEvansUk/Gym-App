@@ -56,6 +56,12 @@ public class WorkoutDataService implements IWorkoutDataService {
         .map(this::toWorkout);
   }
 
+  @Override
+  public Optional<Workout> getWorkout(String workoutName) {
+    return workoutRepository.findByName(workoutName)
+        .map(this::toWorkout);
+  }
+
   private Workout toWorkout(WorkoutEntity workoutEntity) {
     return Workout.builder()
         .name(workoutEntity.getName())
