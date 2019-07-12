@@ -52,10 +52,14 @@ public class WorkoutDataService {
     private Workout toWorkout(WorkoutEntity workoutEntity) {
         return Workout.builder()
                 .name(workoutEntity.getName())
-                .exercises(workoutEntity.getExercises().stream()
-                        .map(this::toExercise)
-                        .collect(Collectors.toList()))
+                .exercises(convertExerciseEntities(workoutEntity.getExercises()))
                 .build();
+    }
+
+    private List<Exercise> convertExerciseEntities(List<ExerciseEntity> exercises) {
+        return exercises.stream()
+                .map(this::toExercise)
+                .collect(Collectors.toList());
     }
 
     private Exercise toExercise(ExerciseEntity exerciseEntity) {
