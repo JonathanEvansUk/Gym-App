@@ -14,6 +14,6 @@ public class Routine {
 
   private final String name;
   private final List<Exercise> exercises;
-  private final Instant lastPerformedDateUtc;
+  private final Instant lastPerformedTimestampUtc;
   private final String notes;
 }

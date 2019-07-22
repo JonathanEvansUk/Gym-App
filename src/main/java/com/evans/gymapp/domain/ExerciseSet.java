@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Builder
 @RequiredArgsConstructor
-public class Exercise {
+public class ExerciseSet {
 
-  private final String name;
-  private final MuscleGroup muscleGroup;
-  private final String information;
+  private final int numberOfReps;
+  private final double weightKg;
+  private final Status status;
 }

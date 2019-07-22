@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @RequiredArgsConstructor
-public class Exercise {
+public class ExerciseActivity {
 
-  private final String name;
-  private final MuscleGroup muscleGroup;
-  private final String information;
+  private final List<ExerciseSet> sets;
+  private final String notes;
 }
