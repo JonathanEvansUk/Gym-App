@@ -2,8 +2,8 @@ package com.evans.gymapp.persistence.service;
 
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
-import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.table.ExerciseEntity;
+import com.evans.gymapp.util.converter.ExerciseConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,12 @@ public class ExerciseDataService implements IExerciseDataService {
   @NonNull
   private final ExerciseRepository exerciseRepository;
 
+  @NonNull
+  private final ExerciseConverter exerciseConverter;
+
   @Override
   public void addExercise(Exercise exercise) {
-    ExerciseEntity exerciseEntity = toExerciseEntity(exercise);
+    ExerciseEntity exerciseEntity = exerciseConverter.convert(exercise);
 
     exerciseRepository.save(exerciseEntity);
   }
@@ -34,10 +37,4 @@ public class ExerciseDataService implements IExerciseDataService {
     return null;
   }
 
-  //TODO pull this out to common transformer / converter class - also found in WorkoutDataService
-  private ExerciseEntity toExerciseEntity(Exercise exercise) {
-    return ExerciseEntity.builder()
-        .name(exercise.getName())
-        .build();
-  }
 }

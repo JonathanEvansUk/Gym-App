@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.table;
 
+import com.evans.gymapp.domain.MuscleGroup;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -22,4 +23,8 @@ public class ExerciseEntity {
   @NonNull
   private String name;
 
+  @NonNull
+  private MuscleGroup muscleGroup;
+
+  private String information;
 }
