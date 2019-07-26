@@ -5,6 +5,7 @@ import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
 import com.evans.gymapp.persistence.table.WorkoutEntity;
+import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +24,9 @@ public class WorkoutDataService implements IWorkoutDataService {
 
   @NonNull
   private final WorkoutRepository workoutRepository;
+
+  @NonNull
+  private final WorkoutConverter workoutConverter;
 
   @PostConstruct
   public void initiate() {
@@ -49,39 +52,28 @@ public class WorkoutDataService implements IWorkoutDataService {
   @Override
   //TODO maybe return boolean to indicate successful creation?
   public void addWorkout(Workout workout) {
-    WorkoutEntity workoutEntity = toWorkoutEntity(workout);
+    WorkoutEntity workoutEntity = workoutConverter.convert(workout);
 
     workoutRepository.save(workoutEntity);
   }
 
   @Override
   public List<Workout> getAllWorkouts() {
-    return StreamSupport.stream(workoutRepository.findAll().spliterator(), false)
-        .map(this::toWorkout)
+    return workoutRepository.findAll()
+        .stream()
+        .map(workoutConverter::convert)
         .collect(Collectors.toList());
   }
 
   @Override
   public Optional<Workout> getWorkout(long workoutId) {
     return workoutRepository.findById(workoutId)
-        .map(this::toWorkout);
+        .map(workoutConverter::convert);
   }
 
   @Override
   public Optional<Workout> getWorkout(String workoutName) {
     return workoutRepository.findByName(workoutName)
-        .map(this::toWorkout);
-  }
-
-  private Workout toWorkout(WorkoutEntity workoutEntity) {
-    return Workout.builder()
-        .name(workoutEntity.getName())
-        .build();
-  }
-
-  private WorkoutEntity toWorkoutEntity(Workout workout) {
-    return WorkoutEntity.builder()
-        .name(workout.getName())
-        .build();
+        .map(workoutConverter::convert);
   }
 }
