@@ -1,8 +1,9 @@
-package com.evans.gymapp.persistence.service;
+package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
+import com.evans.gymapp.persistence.service.IWorkoutDataService;
 import com.evans.gymapp.persistence.table.WorkoutEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

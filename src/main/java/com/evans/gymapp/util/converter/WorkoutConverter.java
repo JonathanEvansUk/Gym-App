@@ -23,15 +23,33 @@ public class WorkoutConverter {
     return Workout.builder()
         .name(workoutEntity.getName())
         .workoutType(workoutEntity.getWorkoutType())
-        .exerciseActivity(convertExerciseActivity(workoutEntity.getExerciseActivity()))
+        .exerciseActivity(convertExerciseEntityActivity(workoutEntity.getExerciseActivity()))
         .build();
   }
 
-  private Map<Exercise, ExerciseActivity> convertExerciseActivity(Map<ExerciseEntity, ExerciseActivity> exerciseActivity) {
+  private Map<Exercise, ExerciseActivity> convertExerciseEntityActivity(Map<ExerciseEntity, ExerciseActivity> exerciseActivity) {
     return exerciseActivity.entrySet()
         .stream()
         .collect(Collectors.toMap(
             entry -> exerciseConverter.convert(entry.getKey()),
-            Map.Entry::getValue));
+            Map.Entry::getValue
+        ));
+  }
+
+  public WorkoutEntity convert(Workout workout) {
+    return WorkoutEntity.builder()
+        .name(workout.getName())
+        .workoutType(workout.getWorkoutType())
+        .exerciseActivity(convertExerciseActivity(workout.getExerciseActivity()))
+        .build();
+  }
+
+  private Map<ExerciseEntity, ExerciseActivity> convertExerciseActivity(Map<Exercise, ExerciseActivity> exerciseActivity) {
+    return exerciseActivity.entrySet()
+        .stream()
+        .collect(Collectors.toMap(
+            entry -> exerciseConverter.convert(entry.getKey()),
+            Map.Entry::getValue
+        ));
   }
 }
