@@ -1,13 +1,12 @@
-package com.evans.gymapp.persistence.table;
+package com.evans.gymapp.persistence.entity;
 
+import com.evans.gymapp.domain.MuscleGroup;
 import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.Instant;
-import java.util.List;
 
 @Entity
 @Builder
@@ -15,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class RoutineEntity {
+public class ExerciseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,10 +24,7 @@ public class RoutineEntity {
   private String name;
 
   @NonNull
-  private List<ExerciseEntity> exercises;
+  private MuscleGroup muscleGroup;
 
-  @NonNull
-  private Instant lastPerformedTimestampUtc;
-
-  private String notes;
+  private String information;
 }

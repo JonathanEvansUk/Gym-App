@@ -4,7 +4,7 @@ import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
-import com.evans.gymapp.persistence.table.WorkoutEntity;
+import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

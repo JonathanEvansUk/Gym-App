@@ -3,7 +3,7 @@ package com.evans.gymapp.persistence.service.impl;
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.service.IExerciseDataService;
-import com.evans.gymapp.persistence.table.ExerciseEntity;
+import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.util.converter.ExerciseConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

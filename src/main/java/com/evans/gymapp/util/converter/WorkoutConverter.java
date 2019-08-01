@@ -3,8 +3,9 @@ package com.evans.gymapp.util.converter;
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
-import com.evans.gymapp.persistence.table.ExerciseEntity;
-import com.evans.gymapp.persistence.table.WorkoutEntity;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
+import com.evans.gymapp.persistence.entity.ExerciseEntity;
+import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ public class WorkoutConverter {
   @NonNull
   private final ExerciseConverter exerciseConverter;
 
+  @NonNull
+  private final ExerciseActivityConverter exerciseActivityConverter;
+
   public Workout convert(WorkoutEntity workoutEntity) {
     return Workout.builder()
         .name(workoutEntity.getName())
@@ -27,12 +31,12 @@ public class WorkoutConverter {
         .build();
   }
 
-  private Map<Exercise, ExerciseActivity> convertExerciseEntityActivity(Map<ExerciseEntity, ExerciseActivity> exerciseActivity) {
+  private Map<Exercise, ExerciseActivity> convertExerciseEntityActivity(Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity) {
     return exerciseActivity.entrySet()
         .stream()
         .collect(Collectors.toMap(
             entry -> exerciseConverter.convert(entry.getKey()),
-            Map.Entry::getValue
+            entry -> exerciseActivityConverter.convert(entry.getValue())
         ));
   }
 
@@ -44,12 +48,12 @@ public class WorkoutConverter {
         .build();
   }
 
-  private Map<ExerciseEntity, ExerciseActivity> convertExerciseActivity(Map<Exercise, ExerciseActivity> exerciseActivity) {
+  private Map<ExerciseEntity, ExerciseActivityEntity> convertExerciseActivity(Map<Exercise, ExerciseActivity> exerciseActivity) {
     return exerciseActivity.entrySet()
         .stream()
         .collect(Collectors.toMap(
             entry -> exerciseConverter.convert(entry.getKey()),
-            Map.Entry::getValue
+            entry -> exerciseActivityConverter.convert(entry.getValue())
         ));
   }
 }

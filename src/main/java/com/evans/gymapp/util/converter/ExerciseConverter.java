@@ -1,7 +1,7 @@
 package com.evans.gymapp.util.converter;
 
 import com.evans.gymapp.domain.Exercise;
-import com.evans.gymapp.persistence.table.ExerciseEntity;
+import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import org.springframework.stereotype.Component;
 
 @Component

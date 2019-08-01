@@ -1,6 +1,5 @@
-package com.evans.gymapp.persistence.table;
+package com.evans.gymapp.persistence.entity;
 
-import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.WorkoutType;
 import lombok.*;
 
@@ -27,12 +26,11 @@ public class WorkoutEntity {
   private WorkoutType workoutType;
 
   @NonNull
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn
-  private Map<ExerciseEntity, ExerciseActivity> exerciseActivity;
+  @OneToMany
+  private Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity;
 
   @NonNull
   private Instant performedAtTimestampUtc;
-  
+
   private String notes;
 }
