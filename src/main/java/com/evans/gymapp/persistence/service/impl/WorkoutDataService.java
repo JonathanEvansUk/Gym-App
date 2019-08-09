@@ -1,10 +1,16 @@
 package com.evans.gymapp.persistence.service.impl;
 
+import com.evans.gymapp.domain.MuscleGroup;
+import com.evans.gymapp.domain.Status;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
+import com.evans.gymapp.persistence.entity.ExerciseEntity;
+import com.evans.gymapp.persistence.entity.ExerciseSetEntity;
+import com.evans.gymapp.persistence.entity.WorkoutEntity;
+import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
-import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,10 +31,37 @@ public class WorkoutDataService implements IWorkoutDataService {
   private final WorkoutRepository workoutRepository;
 
   @NonNull
+  //TODO remove this?
+  private final ExerciseRepository exerciseRepository;
+
+  @NonNull
   private final WorkoutConverter workoutConverter;
 
   @PostConstruct
   public void initiate() {
+    Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity = new HashMap<>();
+
+    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
+        .id(1L)
+        .name("Bicep Curl")
+        .muscleGroup(MuscleGroup.BICEP)
+        .information("Bicep curl")
+        .build();
+
+    exerciseRepository.save(exerciseEntity);
+
+    ExerciseSetEntity exerciseSetEntity = ExerciseSetEntity.builder()
+        .numberOfReps(8)
+        .weightKg(10D)
+        .status(Status.COMPLETED)
+        .build();
+
+    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
+        .sets(Collections.singletonList(exerciseSetEntity))
+        .build();
+
+    exerciseActivity.put(exerciseEntity, exerciseActivityEntity);
+
     WorkoutEntity workoutEntity1 = WorkoutEntity.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
@@ -43,7 +73,7 @@ public class WorkoutDataService implements IWorkoutDataService {
     WorkoutEntity workoutEntity2 = WorkoutEntity.builder()
         .name("workout 2")
         .workoutType(WorkoutType.LEGS)
-        .exerciseActivity(Collections.emptyMap())
+        .exerciseActivity(exerciseActivity)
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

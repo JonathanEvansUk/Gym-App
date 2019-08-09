@@ -37,7 +37,7 @@ public class WorkoutController {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
-  @GetMapping("/workout/byName/{workoutName}")
+  @GetMapping("/workouts/byName/{workoutName}")
   public ResponseEntity<Workout> getWorkout(@PathVariable String workoutName) {
     return workoutDataService.getWorkout(workoutName)
         .map(workout -> ResponseEntity.ok().body(workout))

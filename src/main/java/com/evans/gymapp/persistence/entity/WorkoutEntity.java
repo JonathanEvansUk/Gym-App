@@ -26,7 +26,7 @@ public class WorkoutEntity {
   private WorkoutType workoutType;
 
   @NonNull
-  @OneToMany
+  @OneToMany(cascade = CascadeType.ALL)
   private Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity;
 
   @NonNull
