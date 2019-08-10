@@ -18,6 +18,10 @@ public class ExerciseActivityEntity {
   private Long id;
 
   @NonNull
+  @ManyToOne
+  private ExerciseEntity exercise;
+
+  @NonNull
   @ElementCollection
   private List<ExerciseSetEntity> sets;
 

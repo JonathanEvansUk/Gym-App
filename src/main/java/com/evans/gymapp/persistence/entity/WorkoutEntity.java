@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Data
@@ -27,7 +27,7 @@ public class WorkoutEntity {
 
   @NonNull
   @OneToMany(cascade = CascadeType.ALL)
-  private Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity;
+  private Set<ExerciseActivityEntity> exerciseActivities;
 
   @NonNull
   private Instant performedAtTimestampUtc;

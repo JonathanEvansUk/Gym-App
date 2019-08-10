@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
-import java.util.Map;
+import java.util.Set;
 
 @Data
 @Builder
@@ -14,7 +14,7 @@ public class Workout {
 
   private final String name;
   private final WorkoutType workoutType;
-  private final Map<Exercise, ExerciseActivity> exerciseActivity;
+  private final Set<ExerciseActivity> exerciseActivities;
   private final Instant performedAtTimestampUtc;
   private final String notes;
 }

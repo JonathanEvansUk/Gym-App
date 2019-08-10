@@ -1,24 +1,19 @@
 package com.evans.gymapp.util.converter;
 
-import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
-import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class WorkoutConverter {
-
-  @NonNull
-  private final ExerciseConverter exerciseConverter;
 
   @NonNull
   private final ExerciseActivityConverter exerciseActivityConverter;
@@ -27,33 +22,27 @@ public class WorkoutConverter {
     return Workout.builder()
         .name(workoutEntity.getName())
         .workoutType(workoutEntity.getWorkoutType())
-        .exerciseActivity(convertExerciseEntityActivity(workoutEntity.getExerciseActivity()))
+        .exerciseActivities(convertExerciseEntityActivity(workoutEntity.getExerciseActivities()))
         .build();
   }
 
-  private Map<Exercise, ExerciseActivity> convertExerciseEntityActivity(Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity) {
-    return exerciseActivity.entrySet()
-        .stream()
-        .collect(Collectors.toMap(
-            entry -> exerciseConverter.convert(entry.getKey()),
-            entry -> exerciseActivityConverter.convert(entry.getValue())
-        ));
+  private Set<ExerciseActivity> convertExerciseEntityActivity(Set<ExerciseActivityEntity> exerciseActivities) {
+    return exerciseActivities.stream()
+        .map(exerciseActivityConverter::convert)
+        .collect(Collectors.toSet());
   }
 
   public WorkoutEntity convert(Workout workout) {
     return WorkoutEntity.builder()
         .name(workout.getName())
         .workoutType(workout.getWorkoutType())
-        .exerciseActivity(convertExerciseActivity(workout.getExerciseActivity()))
+        .exerciseActivities(convertExerciseActivity(workout.getExerciseActivities()))
         .build();
   }
 
-  private Map<ExerciseEntity, ExerciseActivityEntity> convertExerciseActivity(Map<Exercise, ExerciseActivity> exerciseActivity) {
-    return exerciseActivity.entrySet()
-        .stream()
-        .collect(Collectors.toMap(
-            entry -> exerciseConverter.convert(entry.getKey()),
-            entry -> exerciseActivityConverter.convert(entry.getValue())
-        ));
+  private Set<ExerciseActivityEntity> convertExerciseActivity(Set<ExerciseActivity> exerciseActivities) {
+    return exerciseActivities.stream()
+        .map(exerciseActivityConverter::convert)
+        .collect(Collectors.toSet());
   }
 }

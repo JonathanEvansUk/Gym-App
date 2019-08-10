@@ -16,8 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,11 +33,10 @@ public class GymAppApplicationTests {
     objectMapper.writeValueAsString(workoutEntity);
 
 
-
   }
 
   public WorkoutEntity initiate() {
-    Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity = new HashMap<>();
+    Set<ExerciseActivityEntity> exerciseActivity = new HashSet<>();
 
     ExerciseEntity exerciseEntity = ExerciseEntity.builder()
         .id(1L)
@@ -56,12 +55,12 @@ public class GymAppApplicationTests {
         .sets(Collections.singletonList(exerciseSetEntity))
         .build();
 
-    exerciseActivity.put(exerciseEntity, exerciseActivityEntity);
+    exerciseActivity.add(exerciseActivityEntity);
 
     WorkoutEntity workoutEntity1 = WorkoutEntity.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
-        .exerciseActivity(Collections.emptyMap())
+        .exerciseActivities(Collections.emptySet())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();
@@ -69,7 +68,7 @@ public class GymAppApplicationTests {
     WorkoutEntity workoutEntity2 = WorkoutEntity.builder()
         .name("workout 2")
         .workoutType(WorkoutType.LEGS)
-        .exerciseActivity(exerciseActivity)
+        .exerciseActivities(exerciseActivity)
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

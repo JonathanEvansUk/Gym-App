@@ -39,33 +39,61 @@ public class WorkoutDataService implements IWorkoutDataService {
 
   @PostConstruct
   public void initiate() {
-    Map<ExerciseEntity, ExerciseActivityEntity> exerciseActivity = new HashMap<>();
+    Set<ExerciseActivityEntity> exerciseActivities = new HashSet<>();
 
-    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
+    ExerciseEntity exerciseEntity1 = ExerciseEntity.builder()
         .id(1L)
         .name("Bicep Curl")
         .muscleGroup(MuscleGroup.BICEP)
         .information("Bicep curl")
         .build();
 
-    exerciseRepository.save(exerciseEntity);
+    exerciseRepository.save(exerciseEntity1);
 
-    ExerciseSetEntity exerciseSetEntity = ExerciseSetEntity.builder()
+    ExerciseSetEntity exerciseSetEntity1 = ExerciseSetEntity.builder()
         .numberOfReps(8)
         .weightKg(10D)
         .status(Status.COMPLETED)
         .build();
 
-    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
-        .sets(Collections.singletonList(exerciseSetEntity))
+    ExerciseSetEntity exerciseSetEntity2 = ExerciseSetEntity.builder()
+        .numberOfReps(10)
+        .weightKg(12D)
+        .status(Status.FAILED)
         .build();
 
-    exerciseActivity.put(exerciseEntity, exerciseActivityEntity);
+    ExerciseEntity exerciseEntity2 = ExerciseEntity.builder()
+        .id(2L)
+        .name("Barbell Row")
+        .muscleGroup(MuscleGroup.BICEP)
+        .information("Barbell Row")
+        .build();
+
+    ExerciseSetEntity exerciseSetEntity3 = ExerciseSetEntity.builder()
+        .numberOfReps(12)
+        .weightKg(40D)
+        .status(Status.COMPLETED)
+        .build();
+
+    exerciseRepository.save(exerciseEntity2);
+
+    ExerciseActivityEntity exerciseActivityEntity1 = ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity1)
+        .sets(Arrays.asList(exerciseSetEntity1, exerciseSetEntity2))
+        .build();
+
+    ExerciseActivityEntity exerciseActivityEntity2 = ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity2)
+        .sets(Collections.singletonList(exerciseSetEntity3))
+        .build();
+
+    exerciseActivities.add(exerciseActivityEntity1);
+    exerciseActivities.add(exerciseActivityEntity2);
 
     WorkoutEntity workoutEntity1 = WorkoutEntity.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
-        .exerciseActivity(Collections.emptyMap())
+        .exerciseActivities(Collections.emptySet())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();
@@ -73,7 +101,7 @@ public class WorkoutDataService implements IWorkoutDataService {
     WorkoutEntity workoutEntity2 = WorkoutEntity.builder()
         .name("workout 2")
         .workoutType(WorkoutType.LEGS)
-        .exerciseActivity(exerciseActivity)
+        .exerciseActivities(exerciseActivities)
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

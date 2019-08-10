@@ -16,10 +16,14 @@ import java.util.stream.Collectors;
 public class ExerciseActivityConverter {
 
   @NonNull
+  private final ExerciseConverter exerciseConverter;
+
+  @NonNull
   private final ExerciseSetConverter exerciseSetConverter;
 
   public ExerciseActivity convert(ExerciseActivityEntity exerciseActivityEntity) {
     return ExerciseActivity.builder()
+        .exercise(exerciseConverter.convert(exerciseActivityEntity.getExercise()))
         .sets(convertExerciseSetEntities(exerciseActivityEntity.getSets()))
         .notes(exerciseActivityEntity.getNotes())
         .build();
@@ -33,6 +37,7 @@ public class ExerciseActivityConverter {
 
   public ExerciseActivityEntity convert(ExerciseActivity exerciseActivity) {
     return ExerciseActivityEntity.builder()
+        .exercise(exerciseConverter.convert(exerciseActivity.getExercise()))
         .sets(convertExerciseSets(exerciseActivity.getSets()))
         .notes(exerciseActivity.getNotes())
         .build();
