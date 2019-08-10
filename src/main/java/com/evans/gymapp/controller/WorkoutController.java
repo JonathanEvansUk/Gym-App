@@ -34,14 +34,14 @@ public class WorkoutController {
 
   @GetMapping("/workouts/{workoutId}")
   public ResponseEntity<Workout> getWorkout(@PathVariable long workoutId) {
-    return workoutDataService.getWorkout(workoutId)
+    return workoutDataService.getWorkoutById(workoutId)
         .map(workout -> ResponseEntity.ok().body(workout))
         .orElseThrow(ResourceNotFoundException::new);
   }
 
   @GetMapping("/workouts/byName/{workoutName}")
   public ResponseEntity<Workout> getWorkout(@PathVariable String workoutName) {
-    return workoutDataService.getWorkout(workoutName)
+    return workoutDataService.getWorkoutByName(workoutName)
         .map(workout -> ResponseEntity.ok().body(workout))
         .orElseThrow(ResourceNotFoundException::new);
   }

@@ -126,13 +126,13 @@ public class WorkoutDataService implements IWorkoutDataService {
   }
 
   @Override
-  public Optional<Workout> getWorkout(long workoutId) {
+  public Optional<Workout> getWorkoutById(long workoutId) {
     return workoutRepository.findById(workoutId)
         .map(workoutConverter::convert);
   }
 
   @Override
-  public Optional<Workout> getWorkout(String workoutName) {
+  public Optional<Workout> getWorkoutByName(String workoutName) {
     return workoutRepository.findByName(workoutName)
         .map(workoutConverter::convert);
   }
