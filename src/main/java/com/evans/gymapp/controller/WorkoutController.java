@@ -25,6 +25,8 @@ public class WorkoutController {
     return "workout not found";
   }
 
+  //CrossOrigin required for CORS support. As the React frontend calls locally hosted Spring Boot API
+  @CrossOrigin
   @GetMapping("/workouts")
   public List<Workout> getAllWorkouts() {
     return workoutDataService.getAllWorkouts();
