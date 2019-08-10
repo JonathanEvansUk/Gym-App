@@ -121,8 +121,6 @@ public class WorkoutDataService implements IWorkoutDataService {
   public List<Workout> getAllWorkouts() {
     return workoutRepository.findAll()
         .stream()
-        //TODO remove peek
-        .peek(i -> log.info(i.toString()))
         .map(workoutConverter::convert)
         .collect(Collectors.toList());
   }
