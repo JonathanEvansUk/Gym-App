@@ -18,13 +18,16 @@ import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkoutDataServiceTest {
+
+  private static final String WORKOUT_NAME = "workoutName";
 
   private WorkoutDataService workoutDataService;
 
@@ -44,7 +47,16 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void addWorkout() {
-    fail();
+    Workout workout = createWorkout();
+    WorkoutEntity workoutEntity = createWorkoutEntity();
+
+    given(workoutConverter.convert(workout))
+        .willReturn(workoutEntity);
+
+    workoutDataService.addWorkout(workout);
+
+    verify(workoutConverter).convert(workout);
+    verify(workoutRepository).save(workoutEntity);
   }
 
   @Test
@@ -61,13 +73,7 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void getAllWorkouts() {
-    WorkoutEntity workoutEntity = WorkoutEntity.builder()
-        .name("workout1")
-        .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptySet())
-        .performedAtTimestampUtc(Instant.now())
-        .notes("notes")
-        .build();
+    WorkoutEntity workoutEntity = createWorkoutEntity();
 
     given(workoutRepository.findAll())
         .willReturn(Collections.singletonList(workoutEntity));
@@ -96,13 +102,7 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void getWorkoutById() {
-    WorkoutEntity workoutEntity = WorkoutEntity.builder()
-        .name("workout1")
-        .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptySet())
-        .performedAtTimestampUtc(Instant.now())
-        .notes("notes")
-        .build();
+    WorkoutEntity workoutEntity = createWorkoutEntity();
 
     given(workoutRepository.findById(1L))
         .willReturn(Optional.of(workoutEntity));
@@ -119,36 +119,50 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void getWorkoutByName_noWorkout() {
-    given(workoutRepository.findByName("workoutName"))
+    given(workoutRepository.findByName(WORKOUT_NAME))
         .willReturn(Optional.empty());
 
-    Optional<Workout> workout = workoutDataService.getWorkoutByName("workoutName");
+    Optional<Workout> workout = workoutDataService.getWorkoutByName(WORKOUT_NAME);
 
-    verify(workoutRepository).findByName("workoutName");
+    verify(workoutRepository).findByName(WORKOUT_NAME);
     verifyZeroInteractions(workoutConverter);
     assertFalse(workout.isPresent());
   }
 
   @Test
   public void getWorkoutByName() {
-    WorkoutEntity workoutEntity = WorkoutEntity.builder()
+    WorkoutEntity workoutEntity = createWorkoutEntity();
+
+    given(workoutRepository.findByName(WORKOUT_NAME))
+        .willReturn(Optional.of(workoutEntity));
+
+    given(workoutConverter.convert(workoutEntity))
+        .willReturn(Workout.builder().build());
+
+    Optional<Workout> workout = workoutDataService.getWorkoutByName(WORKOUT_NAME);
+
+    verify(workoutRepository).findByName(WORKOUT_NAME);
+    verify(workoutConverter).convert(workoutEntity);
+    assertTrue(workout.isPresent());
+  }
+
+  private Workout createWorkout() {
+    return Workout.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
         .exerciseActivities(Collections.emptySet())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();
+  }
 
-    given(workoutRepository.findByName("workoutName"))
-        .willReturn(Optional.of(workoutEntity));
-
-    given(workoutConverter.convert(workoutEntity))
-        .willReturn(Workout.builder().build());
-
-    Optional<Workout> workout = workoutDataService.getWorkoutByName("workoutName");
-
-    verify(workoutRepository).findByName("workoutName");
-    verify(workoutConverter).convert(workoutEntity);
-    assertTrue(workout.isPresent());
+  private WorkoutEntity createWorkoutEntity() {
+    return WorkoutEntity.builder()
+        .name("workout1")
+        .workoutType(WorkoutType.ABS)
+        .exerciseActivities(Collections.emptySet())
+        .performedAtTimestampUtc(Instant.now())
+        .notes("notes")
+        .build();
   }
 }
