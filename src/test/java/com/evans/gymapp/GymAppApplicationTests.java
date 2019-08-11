@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,26 +37,52 @@ public class GymAppApplicationTests {
   }
 
   public WorkoutEntity initiate() {
-    Set<ExerciseActivityEntity> exerciseActivity = new HashSet<>();
+    Set<ExerciseActivityEntity> exerciseActivities = new HashSet<>();
 
-    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
-        .id(1L)
+    ExerciseEntity exerciseEntity1 = ExerciseEntity.builder()
+        //.id(1L)
         .name("Bicep Curl")
         .muscleGroup(MuscleGroup.BICEP)
         .information("Bicep curl")
         .build();
 
-    ExerciseSetEntity exerciseSetEntity = ExerciseSetEntity.builder()
+    ExerciseSetEntity exerciseSetEntity1 = ExerciseSetEntity.builder()
         .numberOfReps(8)
         .weightKg(10D)
         .status(Status.COMPLETED)
         .build();
 
-    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
-        .sets(Collections.singletonList(exerciseSetEntity))
+    ExerciseSetEntity exerciseSetEntity2 = ExerciseSetEntity.builder()
+        .numberOfReps(10)
+        .weightKg(12D)
+        .status(Status.FAILED)
         .build();
 
-    exerciseActivity.add(exerciseActivityEntity);
+    ExerciseEntity exerciseEntity2 = ExerciseEntity.builder()
+        //.id(2L)
+        .name("Barbell Row")
+        .muscleGroup(MuscleGroup.BICEP)
+        .information("Barbell Row")
+        .build();
+
+    ExerciseSetEntity exerciseSetEntity3 = ExerciseSetEntity.builder()
+        .numberOfReps(12)
+        .weightKg(40D)
+        .status(Status.COMPLETED)
+        .build();
+
+    ExerciseActivityEntity exerciseActivityEntity1 = ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity1)
+        .sets(Arrays.asList(exerciseSetEntity1, exerciseSetEntity2))
+        .build();
+
+    ExerciseActivityEntity exerciseActivityEntity2 = ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity2)
+        .sets(Collections.singletonList(exerciseSetEntity3))
+        .build();
+
+    exerciseActivities.add(exerciseActivityEntity1);
+    exerciseActivities.add(exerciseActivityEntity2);
 
     WorkoutEntity workoutEntity1 = WorkoutEntity.builder()
         .name("workout1")
@@ -68,7 +95,7 @@ public class GymAppApplicationTests {
     WorkoutEntity workoutEntity2 = WorkoutEntity.builder()
         .name("workout 2")
         .workoutType(WorkoutType.LEGS)
-        .exerciseActivities(exerciseActivity)
+        .exerciseActivities(exerciseActivities)
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

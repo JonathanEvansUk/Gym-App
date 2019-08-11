@@ -18,7 +18,7 @@ public class ExerciseActivityEntity {
   private Long id;
 
   @NonNull
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private ExerciseEntity exercise;
 
   @NonNull
