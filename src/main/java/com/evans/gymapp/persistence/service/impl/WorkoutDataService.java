@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.service.impl;
 
+import com.evans.gymapp.CustomStringManufacturer;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
@@ -38,6 +39,7 @@ public class WorkoutDataService implements IWorkoutDataService {
   public void initiate() {
     PodamFactory podamFactory = new PodamFactoryImpl();
 
+    podamFactory.getStrategy().addOrReplaceTypeManufacturer(String.class, new CustomStringManufacturer());
     //  WorkoutEntity workoutEntity = podamFactory.manufacturePojo(WorkoutEntity.class);
 
 //    workoutRepository.save(workoutEntity);

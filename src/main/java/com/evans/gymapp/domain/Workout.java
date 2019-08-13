@@ -12,6 +12,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class Workout {
 
+  private final Long id;
   private final String name;
   private final WorkoutType workoutType;
   private final Set<ExerciseActivity> exerciseActivities;
