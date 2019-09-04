@@ -9,6 +9,7 @@ public class ExerciseConverter {
 
   public Exercise convert(ExerciseEntity exerciseEntity) {
     return Exercise.builder()
+        .id(exerciseEntity.getId())
         .name(exerciseEntity.getName())
         .muscleGroup(exerciseEntity.getMuscleGroup())
         .information(exerciseEntity.getInformation())
@@ -17,6 +18,7 @@ public class ExerciseConverter {
 
   public ExerciseEntity convert(Exercise exercise) {
     return ExerciseEntity.builder()
+        .id(exercise.getId())
         .name(exercise.getName())
         .muscleGroup(exercise.getMuscleGroup())
         .information(exercise.getInformation())

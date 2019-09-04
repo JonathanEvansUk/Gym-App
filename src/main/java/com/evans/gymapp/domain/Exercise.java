@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Exercise {
 
+  private final Long id;
   private final String name;
   private final MuscleGroup muscleGroup;
   private final String information;
