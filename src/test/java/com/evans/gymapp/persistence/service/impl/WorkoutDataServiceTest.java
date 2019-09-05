@@ -5,6 +5,7 @@ import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
+import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,9 +41,12 @@ public class WorkoutDataServiceTest {
   @Mock
   private WorkoutConverter workoutConverter;
 
+  @Mock
+  private ExerciseActivityConverter exerciseActivityConverter;
+
   @Before
   public void setUp() {
-    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, workoutConverter);
+    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, workoutConverter, exerciseActivityConverter);
   }
 
   @Test

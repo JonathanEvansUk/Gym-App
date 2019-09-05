@@ -23,6 +23,7 @@ public class ExerciseActivityConverter {
 
   public ExerciseActivity convert(ExerciseActivityEntity exerciseActivityEntity) {
     return ExerciseActivity.builder()
+        .id(exerciseActivityEntity.getId())
         .exercise(exerciseConverter.convert(exerciseActivityEntity.getExercise()))
         .sets(convertExerciseSetEntities(exerciseActivityEntity.getSets()))
         .notes(exerciseActivityEntity.getNotes())
@@ -37,6 +38,7 @@ public class ExerciseActivityConverter {
 
   public ExerciseActivityEntity convert(ExerciseActivity exerciseActivity) {
     return ExerciseActivityEntity.builder()
+        .id(exerciseActivity.getId())
         .exercise(exerciseConverter.convert(exerciseActivity.getExercise()))
         .sets(convertExerciseSets(exerciseActivity.getSets()))
         .notes(exerciseActivity.getNotes())

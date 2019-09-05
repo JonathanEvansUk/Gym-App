@@ -1,5 +1,6 @@
 package com.evans.gymapp.controller;
 
+import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
 import lombok.NonNull;
@@ -44,6 +45,17 @@ public class WorkoutController {
     return workoutDataService.getWorkoutByName(workoutName)
         .map(workout -> ResponseEntity.ok().body(workout))
         .orElseThrow(ResourceNotFoundException::new);
+  }
+
+  @CrossOrigin
+  @PatchMapping("/workouts/{workoutId}/updateSets")
+  public ResponseEntity<?> updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) {
+    log.info("workoutId: {}", workoutId);
+    log.info("exerciseActivity: {}", exerciseActivity);
+
+    workoutDataService.updateSets(workoutId, exerciseActivity);
+
+    return ResponseEntity.ok().build();
   }
 
   public class ResourceNotFoundException extends RuntimeException {

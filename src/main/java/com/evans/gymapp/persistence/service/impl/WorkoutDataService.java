@@ -1,11 +1,14 @@
 package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.CustomStringManufacturer;
+import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
+import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import uk.co.jemos.podam.api.PodamFactoryImpl;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -34,6 +38,9 @@ public class WorkoutDataService implements IWorkoutDataService {
 
   @NonNull
   private final WorkoutConverter workoutConverter;
+
+  @NonNull
+  private final ExerciseActivityConverter exerciseActivityConverter;
 
   @PostConstruct
   public void initiate() {
@@ -77,5 +84,30 @@ public class WorkoutDataService implements IWorkoutDataService {
   public Optional<Workout> getWorkoutByName(String workoutName) {
     return workoutRepository.findByName(workoutName)
         .map(workoutConverter::convert);
+  }
+
+  @Override
+  public void updateSets(long workoutId, ExerciseActivity newExerciseActivity) {
+    Optional<WorkoutEntity> currentWorkout = workoutRepository.findById(workoutId);
+
+    if (currentWorkout.isPresent()) {
+      ExerciseActivityEntity newExerciseActivityEntity = exerciseActivityConverter.convert(newExerciseActivity);
+
+      WorkoutEntity workoutEntity = currentWorkout.get();
+
+      // Add new exercise activity to existing collection
+      Set<ExerciseActivityEntity> exerciseActivityEntities = workoutEntity.getExerciseActivities().stream()
+          .filter(exerciseActivityEntity -> !exerciseActivityEntity.getId().equals(newExerciseActivity.getId()))
+          .collect(Collectors.toSet());
+
+      exerciseActivityEntities.add(newExerciseActivityEntity);
+
+      workoutEntity.setExerciseActivities(exerciseActivityEntities);
+
+      //exerciseRepository.save(newExerciseActivityEntity.getExercise());
+
+
+//      workoutRepository.save(workoutEntity);
+    }
   }
 }

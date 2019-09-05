@@ -11,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseActivity {
 
+  private final Long id;
   private final Exercise exercise;
   private final List<ExerciseSet> sets;
   private final String notes;
