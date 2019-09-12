@@ -23,7 +23,7 @@ public class CustomStringManufacturer extends StringTypeManufacturerImpl {
       "Squat",
       "Romanian Deadlift"
   );
-  
+
   private static final Random RANDOM = new Random();
 
   @Override
@@ -32,9 +32,9 @@ public class CustomStringManufacturer extends StringTypeManufacturerImpl {
       return getWorkoutEntityAttributes(attributeMetadata);
     }
 
-    if (ExerciseEntity.class.isAssignableFrom(attributeMetadata.getPojoClass())) {
-      return getExerciseEntityAttributes(attributeMetadata);
-    }
+//    if (ExerciseEntity.class.isAssignableFrom(attributeMetadata.getPojoClass())) {
+//      return getExerciseEntityAttributes(attributeMetadata);
+//    }
 
     return super.getType(strategy, attributeMetadata, genericTypesArgumentsMap);
   }

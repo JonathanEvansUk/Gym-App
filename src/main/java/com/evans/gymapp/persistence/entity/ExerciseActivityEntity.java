@@ -1,6 +1,7 @@
 package com.evans.gymapp.persistence.entity;
 
 import lombok.*;
+import uk.co.jemos.podam.common.PodamStrategyValue;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,7 +19,7 @@ public class ExerciseActivityEntity {
   private Long id;
 
   @NonNull
-  @ManyToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.MERGE)
   private ExerciseEntity exercise;
 
   @NonNull

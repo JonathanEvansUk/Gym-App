@@ -3,6 +3,7 @@ package com.evans.gymapp.persistence.service.impl;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
+import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
@@ -44,9 +45,12 @@ public class WorkoutDataServiceTest {
   @Mock
   private ExerciseActivityConverter exerciseActivityConverter;
 
+  @Mock
+  private ExerciseActivityRepository exerciseActivityRepository;
+
   @Before
   public void setUp() {
-    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, workoutConverter, exerciseActivityConverter);
+    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, exerciseActivityRepository, workoutConverter, exerciseActivityConverter);
   }
 
   @Test

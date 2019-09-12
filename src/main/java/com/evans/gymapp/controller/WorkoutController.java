@@ -33,6 +33,7 @@ public class WorkoutController {
     return workoutDataService.getAllWorkouts();
   }
 
+  @CrossOrigin
   @GetMapping("/workouts/{workoutId}")
   public ResponseEntity<Workout> getWorkout(@PathVariable long workoutId) {
     return workoutDataService.getWorkoutById(workoutId)
@@ -47,12 +48,11 @@ public class WorkoutController {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
+
+  //TODO move this to exerciseActivityController
   @CrossOrigin
   @PatchMapping("/workouts/{workoutId}/updateSets")
-  public ResponseEntity<?> updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) {
-    log.info("workoutId: {}", workoutId);
-    log.info("exerciseActivity: {}", exerciseActivity);
-
+  public ResponseEntity updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) {
     workoutDataService.updateSets(workoutId, exerciseActivity);
 
     return ResponseEntity.ok().build();
