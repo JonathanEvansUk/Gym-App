@@ -25,6 +25,7 @@ public class WorkoutEntity {
   @NonNull
   private WorkoutType workoutType;
 
+  //TODO change Set to be some ordered collection
   @NonNull
   @OneToMany(cascade = CascadeType.ALL)
   private Set<ExerciseActivityEntity> exerciseActivities;

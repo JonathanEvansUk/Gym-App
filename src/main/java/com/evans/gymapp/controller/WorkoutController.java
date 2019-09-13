@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -56,6 +57,23 @@ public class WorkoutController {
     workoutDataService.updateSets(workoutId, exerciseActivity);
 
     return ResponseEntity.ok().build();
+  }
+
+  @CrossOrigin
+  @PostMapping("/workouts/{workoutId}/addExerciseActivity")
+  public ResponseEntity addExerciseActivity(@PathVariable long workoutId, @RequestBody long exerciseId) {
+    log.info("Add exercise activity request received");
+    Optional<ExerciseActivity> exerciseActivity = workoutDataService.addExerciseActivity(workoutId, exerciseId);
+
+    if (exerciseActivity.isPresent()) {
+      log.info("exercise activity is present");
+      return ResponseEntity.ok()
+          .body(exerciseActivity.get());
+    }
+
+    log.info("exercise activity is NOT present");
+    //TODO work out what to return
+    return ResponseEntity.badRequest().build();
   }
 
   public class ResourceNotFoundException extends RuntimeException {

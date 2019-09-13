@@ -1,0 +1,28 @@
+package com.evans.gymapp.persistence.service.impl;
+
+import com.evans.gymapp.domain.ExerciseActivity;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
+import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
+import com.evans.gymapp.persistence.service.IExerciseActivityDataService;
+import com.evans.gymapp.util.converter.ExerciseActivityConverter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class ExerciseActivityDataService implements IExerciseActivityDataService {
+
+  @NonNull
+  private final ExerciseActivityRepository exerciseActivityRepository;
+
+  @NonNull
+  private final ExerciseActivityConverter exerciseActivityConverter;
+
+  @Override
+  public void addExerciseActivity(ExerciseActivity exerciseActivity) {
+    ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
+
+    exerciseActivityRepository.save(exerciseActivityEntity);
+  }
+}

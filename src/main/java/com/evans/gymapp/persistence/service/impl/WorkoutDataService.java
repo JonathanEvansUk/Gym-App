@@ -2,7 +2,6 @@ package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.CustomStringManufacturer;
 import com.evans.gymapp.domain.ExerciseActivity;
-import com.evans.gymapp.domain.MuscleGroup;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,7 +60,6 @@ public class WorkoutDataService implements IWorkoutDataService {
         .collect(Collectors.toList());
 
 
-
     workoutRepository.saveAll(workoutEntities);
   }
 
@@ -97,5 +95,44 @@ public class WorkoutDataService implements IWorkoutDataService {
   public void updateSets(long workoutId, ExerciseActivity exerciseActivity) {
     ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
     exerciseActivityRepository.save(exerciseActivityEntity);
+  }
+
+  @Override
+  public Optional<ExerciseActivity> addExerciseActivity(long workoutId, long exerciseId) {
+    Optional<ExerciseEntity> exerciseEntity = exerciseRepository.findById(exerciseId);
+
+    if (exerciseEntity.isPresent()) {
+      ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
+          .exercise(exerciseEntity.get())
+          .sets(Collections.emptyList())
+          .build();
+
+      // TODO not sure if need to save exerciseActivity first before workout
+      // maybe cascade will work something to try in future
+      exerciseActivityRepository.save(exerciseActivityEntity);
+
+      Optional<WorkoutEntity> workoutEntity = workoutRepository.findById(workoutId);
+
+      if (workoutEntity.isPresent()) {
+        // TODO should probably update this to favour immutability
+        WorkoutEntity updatedWorkoutEntity = workoutEntity.get();
+
+        Set<ExerciseActivityEntity> exerciseActivities = updatedWorkoutEntity.getExerciseActivities();
+
+        exerciseActivities.add(exerciseActivityEntity);
+
+        workoutRepository.save(updatedWorkoutEntity);
+
+        ExerciseActivity exerciseActivity = exerciseActivityConverter.convert(exerciseActivityEntity);
+
+        return Optional.of(exerciseActivity);
+      }
+
+      //else throw some exception saying workout not found
+    }
+
+
+    //Maybe throw exception here to say no exercise found for given id?
+    return Optional.empty();
   }
 }

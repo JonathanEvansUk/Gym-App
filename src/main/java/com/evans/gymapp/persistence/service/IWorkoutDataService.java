@@ -17,4 +17,6 @@ public interface IWorkoutDataService {
   Optional<Workout> getWorkoutByName(String workoutName);
 
   void updateSets(long workoutId, ExerciseActivity exerciseActivity);
+
+  Optional<ExerciseActivity> addExerciseActivity(long workoutId, long exerciseId);
 }
