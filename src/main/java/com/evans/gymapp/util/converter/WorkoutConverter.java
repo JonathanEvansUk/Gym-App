@@ -8,7 +8,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,10 +27,10 @@ public class WorkoutConverter {
         .build();
   }
 
-  private Set<ExerciseActivity> convertExerciseEntityActivity(Set<ExerciseActivityEntity> exerciseActivities) {
+  private List<ExerciseActivity> convertExerciseEntityActivity(List<ExerciseActivityEntity> exerciseActivities) {
     return exerciseActivities.stream()
         .map(exerciseActivityConverter::convert)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 
   public WorkoutEntity convert(Workout workout) {
@@ -42,9 +42,9 @@ public class WorkoutConverter {
         .build();
   }
 
-  private Set<ExerciseActivityEntity> convertExerciseActivity(Set<ExerciseActivity> exerciseActivities) {
+  private List<ExerciseActivityEntity> convertExerciseActivity(List<ExerciseActivity> exerciseActivities) {
     return exerciseActivities.stream()
         .map(exerciseActivityConverter::convert)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toList());
   }
 }

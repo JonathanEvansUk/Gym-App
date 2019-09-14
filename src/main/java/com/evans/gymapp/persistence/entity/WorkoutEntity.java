@@ -5,7 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,10 +25,10 @@ public class WorkoutEntity {
   @NonNull
   private WorkoutType workoutType;
 
-  //TODO change Set to be some ordered collection
+  //TODO write tests to confirm preservation of order of insertion
   @NonNull
   @OneToMany(cascade = CascadeType.ALL)
-  private Set<ExerciseActivityEntity> exerciseActivities;
+  private List<ExerciseActivityEntity> exerciseActivities;
 
   @NonNull
   private Instant performedAtTimestampUtc;

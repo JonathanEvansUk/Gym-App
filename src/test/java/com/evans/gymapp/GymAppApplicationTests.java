@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,8 +37,6 @@ public class GymAppApplicationTests {
   }
 
   public WorkoutEntity initiate() {
-    Set<ExerciseActivityEntity> exerciseActivities = new HashSet<>();
-
     ExerciseEntity exerciseEntity1 = ExerciseEntity.builder()
         //.id(1L)
         .name("Bicep Curl")
@@ -81,13 +79,12 @@ public class GymAppApplicationTests {
         .sets(Collections.singletonList(exerciseSetEntity3))
         .build();
 
-    exerciseActivities.add(exerciseActivityEntity1);
-    exerciseActivities.add(exerciseActivityEntity2);
+    List<ExerciseActivityEntity> exerciseActivities = Arrays.asList(exerciseActivityEntity1, exerciseActivityEntity2);
 
     WorkoutEntity workoutEntity1 = WorkoutEntity.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptySet())
+        .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

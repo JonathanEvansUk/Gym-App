@@ -117,7 +117,7 @@ public class WorkoutDataService implements IWorkoutDataService {
         // TODO should probably update this to favour immutability
         WorkoutEntity updatedWorkoutEntity = workoutEntity.get();
 
-        Set<ExerciseActivityEntity> exerciseActivities = updatedWorkoutEntity.getExerciseActivities();
+        List<ExerciseActivityEntity> exerciseActivities = updatedWorkoutEntity.getExerciseActivities();
 
         exerciseActivities.add(exerciseActivityEntity);
 

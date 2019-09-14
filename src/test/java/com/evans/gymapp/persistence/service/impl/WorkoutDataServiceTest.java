@@ -158,7 +158,7 @@ public class WorkoutDataServiceTest {
     return Workout.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptySet())
+        .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();
@@ -168,7 +168,7 @@ public class WorkoutDataServiceTest {
     return WorkoutEntity.builder()
         .name("workout1")
         .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptySet())
+        .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(Instant.now())
         .notes("notes")
         .build();

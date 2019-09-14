@@ -19,8 +19,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -86,7 +84,7 @@ public class DataLoader implements ApplicationRunner {
         .notes("Some notes about tricep pushdowns")
         .build();
 
-    Set<ExerciseActivityEntity> exerciseActivityEntities = Collections.singleton(tricepPushdowns);
+    List<ExerciseActivityEntity> exerciseActivityEntities = Collections.singletonList(tricepPushdowns);
 
     WorkoutEntity workout1 = WorkoutEntity.builder()
         .name("workout 1")
