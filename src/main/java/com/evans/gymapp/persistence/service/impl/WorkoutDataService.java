@@ -1,6 +1,8 @@
 package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.CustomStringManufacturer;
+import com.evans.gymapp.controller.ExerciseNotFoundException;
+import com.evans.gymapp.controller.WorkoutNotFoundException;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
@@ -19,10 +21,10 @@ import org.springframework.stereotype.Service;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -98,41 +100,42 @@ public class WorkoutDataService implements IWorkoutDataService {
   }
 
   @Override
-  public Optional<ExerciseActivity> addExerciseActivity(long workoutId, long exerciseId) {
-    Optional<ExerciseEntity> exerciseEntity = exerciseRepository.findById(exerciseId);
+  public ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException {
+    // TODO change message in exception
+    ExerciseEntity exerciseEntity = exerciseRepository.findById(exerciseId)
+        .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
 
-    if (exerciseEntity.isPresent()) {
-      ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
-          .exercise(exerciseEntity.get())
-          .sets(Collections.emptyList())
-          .build();
+    // TODO change message in exception
+    WorkoutEntity workoutEntity = workoutRepository.findById(workoutId)
+        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
 
-      // TODO not sure if need to save exerciseActivity first before workout
-      // maybe cascade will work something to try in future
-      exerciseActivityRepository.save(exerciseActivityEntity);
+    ExerciseActivityEntity exerciseActivityEntity = createEmptyExerciseActivity(exerciseEntity);
 
-      Optional<WorkoutEntity> workoutEntity = workoutRepository.findById(workoutId);
+    WorkoutEntity updatedWorkoutEntity = createWorkoutWithNewExerciseActivity(workoutEntity, exerciseActivityEntity);
+    
+    // TODO is there a better way to do the below?
+    WorkoutEntity savedWorkoutEntity = workoutRepository.save(updatedWorkoutEntity);
 
-      if (workoutEntity.isPresent()) {
-        // TODO should probably update this to favour immutability
-        WorkoutEntity updatedWorkoutEntity = workoutEntity.get();
+    List<ExerciseActivityEntity> exerciseActivities = savedWorkoutEntity.getExerciseActivities();
 
-        List<ExerciseActivityEntity> exerciseActivities = updatedWorkoutEntity.getExerciseActivities();
+    ExerciseActivityEntity lastAddedExerciseActivity = exerciseActivities.get(exerciseActivities.size() - 1);
 
-        exerciseActivities.add(exerciseActivityEntity);
+    return exerciseActivityConverter.convert(lastAddedExerciseActivity);
+  }
 
-        workoutRepository.save(updatedWorkoutEntity);
+  private WorkoutEntity createWorkoutWithNewExerciseActivity(WorkoutEntity originalWorkoutEntity, ExerciseActivityEntity exerciseActivityEntity) {
+    List<ExerciseActivityEntity> exerciseActivities = new ArrayList<>(originalWorkoutEntity.getExerciseActivities());
+    exerciseActivities.add(exerciseActivityEntity);
 
-        ExerciseActivity exerciseActivity = exerciseActivityConverter.convert(exerciseActivityEntity);
+    return originalWorkoutEntity.toBuilder()
+        .exerciseActivities(exerciseActivities)
+        .build();
+  }
 
-        return Optional.of(exerciseActivity);
-      }
-
-      //else throw some exception saying workout not found
-    }
-
-
-    //Maybe throw exception here to say no exercise found for given id?
-    return Optional.empty();
+  private ExerciseActivityEntity createEmptyExerciseActivity(ExerciseEntity exerciseEntity) {
+    return ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity)
+        .sets(Collections.emptyList())
+        .build();
   }
 }

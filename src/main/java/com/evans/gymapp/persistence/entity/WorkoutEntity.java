@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
