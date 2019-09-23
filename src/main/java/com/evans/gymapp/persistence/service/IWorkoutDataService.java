@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.service;
 
+import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
 import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
 import com.evans.gymapp.domain.ExerciseActivity;
@@ -21,4 +22,6 @@ public interface IWorkoutDataService {
   void updateSets(long workoutId, ExerciseActivity exerciseActivity);
 
   ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException;
+
+  ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException;
 }

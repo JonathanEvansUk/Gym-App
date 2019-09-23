@@ -1,6 +1,7 @@
 package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.CustomStringManufacturer;
+import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
 import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
 import com.evans.gymapp.domain.ExerciseActivity;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -112,7 +110,7 @@ public class WorkoutDataService implements IWorkoutDataService {
     ExerciseActivityEntity exerciseActivityEntity = createEmptyExerciseActivity(exerciseEntity);
 
     WorkoutEntity updatedWorkoutEntity = createWorkoutWithNewExerciseActivity(workoutEntity, exerciseActivityEntity);
-    
+
     // TODO is there a better way to do the below?
     WorkoutEntity savedWorkoutEntity = workoutRepository.save(updatedWorkoutEntity);
 
@@ -121,6 +119,38 @@ public class WorkoutDataService implements IWorkoutDataService {
     ExerciseActivityEntity lastAddedExerciseActivity = exerciseActivities.get(exerciseActivities.size() - 1);
 
     return exerciseActivityConverter.convert(lastAddedExerciseActivity);
+  }
+
+  @Override
+  public ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
+    WorkoutEntity workout = workoutRepository.findById(workoutId)
+        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+
+    if (!workout.getExerciseActivities().isEmpty()) {
+
+      //fetch the exerciseActivityEntity to be removed, we will return this after successful deletion
+      ExerciseActivityEntity exerciseActivityToDelete = workout.getExerciseActivities()
+          .stream()
+          .filter(exerciseActivity -> Objects.equals(exerciseActivity.getId(), exerciseActivityId))
+          .findFirst()
+          .orElseThrow(() -> new ExerciseActivityNotFoundException("exercise activity not found"));
+
+      List<ExerciseActivityEntity> exerciseActivityEntities = new ArrayList<>(workout.getExerciseActivities());
+      exerciseActivityEntities.remove(exerciseActivityToDelete);
+
+      //      //TODO favour immutability
+
+      workout.setExerciseActivities(exerciseActivityEntities);
+
+      //TODO check if this has to happen in this order.
+      //To get this to work in this order I had to add Fetch type EAGER to exerciseSets in exerciseActivityEntity
+      //Do we need to save workout, or can we directly remove exercise actvitiy entity
+      workoutRepository.save(workout);
+
+      return exerciseActivityConverter.convert(exerciseActivityToDelete);
+    }
+
+    throw new ExerciseActivityNotFoundException("exercise activity not found");
   }
 
   private WorkoutEntity createWorkoutWithNewExerciseActivity(WorkoutEntity originalWorkoutEntity, ExerciseActivityEntity exerciseActivityEntity) {

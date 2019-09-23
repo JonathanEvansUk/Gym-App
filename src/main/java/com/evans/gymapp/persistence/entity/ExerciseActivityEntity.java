@@ -1,7 +1,6 @@
 package com.evans.gymapp.persistence.entity;
 
 import lombok.*;
-import uk.co.jemos.podam.common.PodamStrategyValue;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +22,7 @@ public class ExerciseActivityEntity {
   private ExerciseEntity exercise;
 
   @NonNull
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   private List<ExerciseSetEntity> sets;
 
   private String notes;
