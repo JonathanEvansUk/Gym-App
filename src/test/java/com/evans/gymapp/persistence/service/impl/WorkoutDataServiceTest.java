@@ -1,11 +1,9 @@
 package com.evans.gymapp.persistence.service.impl;
 
 import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
+import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
-import com.evans.gymapp.domain.ExerciseActivity;
-import com.evans.gymapp.domain.MuscleGroup;
-import com.evans.gymapp.domain.Workout;
-import com.evans.gymapp.domain.WorkoutType;
+import com.evans.gymapp.domain.*;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
@@ -37,6 +35,7 @@ import static org.mockito.Mockito.*;
 public class WorkoutDataServiceTest {
 
   private static final String WORKOUT_NAME = "workoutName";
+  private static final String TRICEP_PUSHDOWN = "Tricep Pushdown";
 
   private WorkoutDataService workoutDataService;
 
@@ -162,6 +161,109 @@ public class WorkoutDataServiceTest {
   }
 
   @Test
+  public void updateSets() {
+    Exercise exercise = createExercise();
+
+    long exerciseActivityId = 1L;
+
+    ExerciseActivity exerciseActivity = ExerciseActivity.builder()
+        .id(exerciseActivityId)
+        .exercise(exercise)
+        .sets(Collections.emptyList())
+        .build();
+
+    long workoutId = 1L;
+
+    ExerciseActivityEntity exerciseActivityEntity = createExerciseActivityEntity(exerciseActivityId);
+
+    given(exerciseActivityConverter.convert(exerciseActivity))
+        .willReturn(exerciseActivityEntity);
+
+    workoutDataService.updateSets(workoutId, exerciseActivity);
+
+    verify(exerciseActivityConverter).convert(exerciseActivity);
+    verify(exerciseActivityRepository).save(exerciseActivityEntity);
+  }
+
+  @Test
+  public void addExerciseActivity_exerciseNotFound() {
+    long exerciseId = 1L;
+    long workoutId = 1L;
+
+    given(exerciseRepository.findById(exerciseId))
+        .willReturn(Optional.empty());
+
+    assertThrows(ExerciseNotFoundException.class, () -> workoutDataService.addExerciseActivity(workoutId, exerciseId));
+
+    verify(exerciseRepository).findById(exerciseId);
+    verifyZeroInteractions(workoutRepository);
+    verifyZeroInteractions(exerciseActivityConverter);
+  }
+
+  @Test
+  public void addExerciseActivity_workoutNotFound() {
+    long exerciseId = 1L;
+    long workoutId = 1L;
+
+    ExerciseEntity exerciseEntity = createExerciseEntity(exerciseId);
+
+    given(exerciseRepository.findById(exerciseId))
+        .willReturn(Optional.of(exerciseEntity));
+
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.empty());
+
+    assertThrows(WorkoutNotFoundException.class, () -> workoutDataService.addExerciseActivity(workoutId, exerciseId));
+
+    verify(exerciseRepository).findById(exerciseId);
+    verify(workoutRepository).findById(workoutId);
+    verifyNoMoreInteractions(workoutRepository);
+    verifyZeroInteractions(exerciseActivityConverter);
+  }
+
+  @Test
+  public void addExerciseActivity() throws WorkoutNotFoundException, ExerciseNotFoundException {
+    long exerciseId = 1L;
+    long workoutId = 1L;
+
+    ExerciseEntity exerciseEntity = createExerciseEntity(exerciseId);
+    given(exerciseRepository.findById(exerciseId))
+        .willReturn(Optional.of(exerciseEntity));
+
+    WorkoutEntity workoutEntity = createWorkoutEntity().toBuilder()
+        .exerciseActivities(Collections.emptyList())
+        .build();
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.of(workoutEntity));
+
+    ExerciseActivityEntity newExerciseActivity = ExerciseActivityEntity.builder()
+        .exercise(exerciseEntity)
+        .sets(Collections.emptyList())
+        .build();
+
+    WorkoutEntity updatedWorkoutEntity = workoutEntity.toBuilder()
+        .exerciseActivities(Collections.singletonList(newExerciseActivity))
+        .build();
+
+    given(workoutRepository.save(updatedWorkoutEntity))
+        .willReturn(updatedWorkoutEntity);
+
+    Exercise exercise = createExercise();
+    ExerciseActivity exerciseActivity = createEmptyExerciseActivity(exercise);
+
+    given(exerciseActivityConverter.convert(newExerciseActivity))
+        .willReturn(exerciseActivity);
+
+    ExerciseActivity actualExerciseActivity = workoutDataService.addExerciseActivity(workoutId, exerciseId);
+    assertEquals(exerciseActivity, actualExerciseActivity);
+
+    verify(exerciseRepository).findById(exerciseId);
+    verify(workoutRepository).findById(workoutId);
+    verify(workoutRepository).save(updatedWorkoutEntity);
+    verify(exerciseActivityConverter).convert(newExerciseActivity);
+  }
+
+  @Test
   public void deleteExerciseActivity_workoutNotFound() throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
     long workoutId = 1L;
     long exerciseActivityId = 2L;
@@ -265,16 +367,34 @@ public class WorkoutDataServiceTest {
   }
 
   private ExerciseActivityEntity createExerciseActivityEntity(long exerciseActivityEntityId) {
-    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
-        .id(1L)
-        .name("Tricep Pushdown")
-        .muscleGroup(MuscleGroup.TRICEP)
-        .build();
+    ExerciseEntity exerciseEntity = createExerciseEntity(1L);
 
     return ExerciseActivityEntity.builder()
         .id(exerciseActivityEntityId)
         .exercise(exerciseEntity)
         .sets(Collections.emptyList())
+        .build();
+  }
+
+  private ExerciseActivity createEmptyExerciseActivity(Exercise exercise) {
+    return ExerciseActivity.builder()
+        .exercise(exercise)
+        .sets(Collections.emptyList())
+        .build();
+  }
+
+  private ExerciseEntity createExerciseEntity(long exerciseId) {
+    return ExerciseEntity.builder()
+        .id(exerciseId)
+        .name(TRICEP_PUSHDOWN)
+        .muscleGroup(MuscleGroup.TRICEP)
+        .build();
+  }
+
+  private Exercise createExercise() {
+    return Exercise.builder()
+        .name(TRICEP_PUSHDOWN)
+        .muscleGroup(MuscleGroup.TRICEP)
         .build();
   }
 }
