@@ -76,9 +76,16 @@ public class WorkoutController {
   @CrossOrigin
   @DeleteMapping("/workouts/{workoutId}/exerciseActivity/{exerciseActivityId}")
   public ResponseEntity deleteExerciseActivity(@PathVariable long workoutId, @PathVariable long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
-    ExerciseActivity exerciseActivity = workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId);
+    try {
+      ExerciseActivity exerciseActivity = workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId);
 
-    return ResponseEntity.ok().body(exerciseActivity);
+      return ResponseEntity.ok().body(exerciseActivity);
+    } catch (WorkoutNotFoundException | ExerciseActivityNotFoundException e) {
+      log.error(e.getMessage());
+
+      //TODO work out what to return for bad request?
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   public class ResourceNotFoundException extends RuntimeException {
