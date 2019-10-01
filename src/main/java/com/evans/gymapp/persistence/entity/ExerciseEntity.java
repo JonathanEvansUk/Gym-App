@@ -3,10 +3,7 @@ package com.evans.gymapp.persistence.entity;
 import com.evans.gymapp.domain.MuscleGroup;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Builder
@@ -23,6 +20,7 @@ public class ExerciseEntity {
   @NonNull
   private String name;
 
+  @Enumerated(EnumType.STRING)
   @NonNull
   private MuscleGroup muscleGroup;
 
