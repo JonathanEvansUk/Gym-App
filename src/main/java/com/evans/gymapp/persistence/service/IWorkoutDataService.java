@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.service;
 
+import com.evans.gymapp.controller.CreateWorkoutRequest;
 import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
 import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface IWorkoutDataService {
 
-  void addWorkout(Workout workout);
+  Workout addWorkout(CreateWorkoutRequest request);
 
   List<Workout> getAllWorkouts();
 

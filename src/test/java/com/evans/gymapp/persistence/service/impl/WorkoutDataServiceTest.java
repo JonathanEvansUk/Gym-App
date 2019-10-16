@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.service.impl;
 
+import com.evans.gymapp.controller.CreateWorkoutRequest;
 import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
 import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
@@ -61,16 +62,41 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void addWorkout() {
-    Workout workout = createWorkout();
-    WorkoutEntity workoutEntity = createWorkoutEntity();
+    String workoutName = "workoutName";
+    Instant performedAtTimestampUtc = Instant.now();
 
-    given(workoutConverter.convert(workout))
-        .willReturn(workoutEntity);
+    CreateWorkoutRequest request = CreateWorkoutRequest.builder()
+        .workoutName(workoutName)
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(performedAtTimestampUtc)
+        .build();
 
-    workoutDataService.addWorkout(workout);
+    WorkoutEntity workoutEntityFromRequest = WorkoutEntity.builder()
+        .name(workoutName)
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(performedAtTimestampUtc)
+        .exerciseActivities(Collections.emptyList())
+        .build();
 
-    verify(workoutConverter).convert(workout);
-    verify(workoutRepository).save(workoutEntity);
+    given(workoutRepository.save(workoutEntityFromRequest))
+        .willReturn(workoutEntityFromRequest);
+
+    Workout expectedWorkout = Workout.builder()
+        .name(workoutName)
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(performedAtTimestampUtc)
+        .exerciseActivities(Collections.emptyList())
+        .build();
+
+    given(workoutConverter.convert(workoutEntityFromRequest))
+        .willReturn(expectedWorkout);
+
+    Workout workout = workoutDataService.addWorkout(request);
+
+    verify(workoutRepository).save(workoutEntityFromRequest);
+    verify(workoutConverter).convert(workoutEntityFromRequest);
+
+    assertEquals(expectedWorkout, workout);
   }
 
   @Test

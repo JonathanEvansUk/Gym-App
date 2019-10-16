@@ -3,14 +3,19 @@ package com.evans.gymapp.controller;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -21,10 +26,26 @@ public class WorkoutController {
   private final IWorkoutDataService workoutDataService;
 
   @ExceptionHandler(ResourceNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
   public String handleResourceNotFoundException() {
     return "workout not found";
   }
+
+
+  @ExceptionHandler(InvalidFormatException.class)
+  public ResponseEntity handleInvalidFormatException(InvalidFormatException exception) {
+    return ResponseEntity.badRequest().body(exception);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    Map<String, String> errors = exception.getBindingResult().getAllErrors().stream()
+        .filter(FieldError.class::isInstance)
+        .map(FieldError.class::cast)
+        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+
+    return ResponseEntity.badRequest().body(errors);
+  }
+
 
   //CrossOrigin required for CORS support. As the React frontend calls locally hosted Spring Boot API
   @CrossOrigin
@@ -48,6 +69,14 @@ public class WorkoutController {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
+  @CrossOrigin
+  @PostMapping("/workouts/")
+  public ResponseEntity<Workout> addWorkout(@Valid @RequestBody CreateWorkoutRequest request) {
+
+    Workout workout = workoutDataService.addWorkout(request);
+
+    return ResponseEntity.ok(workout);
+  }
 
   //TODO move this to exerciseActivityController
   @CrossOrigin

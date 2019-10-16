@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.service.impl;
 
+import com.evans.gymapp.controller.CreateWorkoutRequest;
 import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
 import com.evans.gymapp.controller.ExerciseNotFoundException;
 import com.evans.gymapp.controller.WorkoutNotFoundException;
@@ -48,10 +49,21 @@ public class WorkoutDataService implements IWorkoutDataService {
 
   @Override
   //TODO maybe return boolean to indicate successful creation?
-  public void addWorkout(Workout workout) {
-    WorkoutEntity workoutEntity = workoutConverter.convert(workout);
+  public Workout addWorkout(CreateWorkoutRequest request) {
+    WorkoutEntity workoutEntity = createNewWorkoutEntity(request);
 
-    workoutRepository.save(workoutEntity);
+    WorkoutEntity savedWorkoutEntity = workoutRepository.save(workoutEntity);
+
+    return workoutConverter.convert(savedWorkoutEntity);
+  }
+
+  private WorkoutEntity createNewWorkoutEntity(CreateWorkoutRequest request) {
+    return WorkoutEntity.builder()
+        .name(request.getWorkoutName())
+        .workoutType(request.getWorkoutType())
+        .performedAtTimestampUtc(request.getPerformedAtTimestampUtc())
+        .exerciseActivities(Collections.emptyList())
+        .build();
   }
 
   @Override
@@ -125,7 +137,7 @@ public class WorkoutDataService implements IWorkoutDataService {
 
     //TODO check if this has to happen in this order.
     //To get this to work in this order I had to add Fetch type EAGER to exerciseSets in exerciseActivityEntity
-    //Do we need to save workout, or can we directly remove exercise actvitiy entity
+    //Do we need to save workout, or can we directly remove exercise activity entity
     workoutRepository.save(updatedWorkout);
 
     return exerciseActivityConverter.convert(exerciseActivityToDelete);
