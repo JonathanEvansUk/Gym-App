@@ -78,6 +78,14 @@ public class WorkoutController {
     return ResponseEntity.ok(workout);
   }
 
+  @CrossOrigin
+  @DeleteMapping("/workouts/{workoutId}")
+  public ResponseEntity deleteWorkout(@PathVariable long workoutId) throws WorkoutNotFoundException {
+    workoutDataService.deleteWorkout(workoutId);
+  
+    return ResponseEntity.ok().build();
+  }
+
   //TODO move this to exerciseActivityController
   @CrossOrigin
   @PatchMapping("/workouts/{workoutId}/updateSets")
@@ -108,6 +116,7 @@ public class WorkoutController {
     try {
       ExerciseActivity exerciseActivity = workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId);
 
+      //TODO maybe do not return deleted exerciseActivity?
       return ResponseEntity.ok().body(exerciseActivity);
     } catch (WorkoutNotFoundException | ExerciseActivityNotFoundException e) {
       log.error(e.getMessage());

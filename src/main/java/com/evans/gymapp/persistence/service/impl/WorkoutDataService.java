@@ -57,6 +57,14 @@ public class WorkoutDataService implements IWorkoutDataService {
     return workoutConverter.convert(savedWorkoutEntity);
   }
 
+  @Override
+  public void deleteWorkout(long workoutId) throws WorkoutNotFoundException {
+    WorkoutEntity workoutToDelete = workoutRepository.findById(workoutId)
+        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+
+    workoutRepository.delete(workoutToDelete);
+  }
+
   private WorkoutEntity createNewWorkoutEntity(CreateWorkoutRequest request) {
     return WorkoutEntity.builder()
         .name(request.getWorkoutName())

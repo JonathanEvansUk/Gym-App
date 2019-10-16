@@ -14,6 +14,8 @@ public interface IWorkoutDataService {
 
   Workout addWorkout(CreateWorkoutRequest request);
 
+  void deleteWorkout(long workoutId) throws WorkoutNotFoundException;
+
   List<Workout> getAllWorkouts();
 
   Optional<Workout> getWorkoutById(long workoutId);

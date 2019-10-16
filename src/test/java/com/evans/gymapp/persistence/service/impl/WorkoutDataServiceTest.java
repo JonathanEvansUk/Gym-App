@@ -100,6 +100,36 @@ public class WorkoutDataServiceTest {
   }
 
   @Test
+  public void deleteWorkout_workoutNotFound() {
+    long workoutId = 1L;
+
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.empty());
+
+    assertThrows(WorkoutNotFoundException.class, () -> {
+      workoutDataService.deleteWorkout(workoutId);
+    });
+
+    verify(workoutRepository).findById(workoutId);
+    verifyNoMoreInteractions(workoutRepository);
+  }
+
+  @Test
+  public void deleteWorkout() throws WorkoutNotFoundException {
+    long workoutId = 1L;
+
+    WorkoutEntity workoutEntity = createWorkoutEntity();
+
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.of(workoutEntity));
+
+    workoutDataService.deleteWorkout(workoutId);
+
+    verify(workoutRepository).findById(workoutId);
+    verify(workoutRepository).delete(workoutEntity);
+  }
+
+  @Test
   public void getAllWorkouts_noStoredWorkouts() {
     given(workoutRepository.findAll())
         .willReturn(Collections.emptyList());
