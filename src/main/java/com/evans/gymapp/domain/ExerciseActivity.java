@@ -1,5 +1,6 @@
 package com.evans.gymapp.domain;
 
+import com.evans.gymapp.domain.sets.ExerciseSet;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

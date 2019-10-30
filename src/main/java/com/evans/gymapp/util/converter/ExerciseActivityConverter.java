@@ -1,9 +1,9 @@
 package com.evans.gymapp.util.converter;
 
 import com.evans.gymapp.domain.ExerciseActivity;
-import com.evans.gymapp.domain.ExerciseSet;
+import com.evans.gymapp.domain.sets.ExerciseSet;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
-import com.evans.gymapp.persistence.entity.ExerciseSetEntity;
+import com.evans.gymapp.persistence.entity.sets.ExerciseSetEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

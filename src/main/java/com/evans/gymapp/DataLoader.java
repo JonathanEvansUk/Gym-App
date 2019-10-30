@@ -1,11 +1,10 @@
 package com.evans.gymapp;
 
 import com.evans.gymapp.domain.MuscleGroup;
-import com.evans.gymapp.domain.Status;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
-import com.evans.gymapp.persistence.entity.ExerciseSetEntity;
+import com.evans.gymapp.persistence.entity.sets.ExerciseSetEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
@@ -32,13 +31,13 @@ public class DataLoader implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) throws Exception {
-    List<ExerciseEntity> exerciseEntities = generateExercises();
-
-    exerciseRepository.saveAll(exerciseEntities);
-
-    List<WorkoutEntity> workoutEntities = generateWorkoutEntities(exerciseEntities);
-
-    workoutRepository.saveAll(workoutEntities);
+//    List<ExerciseEntity> exerciseEntities = generateExercises();
+//
+//    exerciseRepository.saveAll(exerciseEntities);
+//
+//    List<WorkoutEntity> workoutEntities = generateWorkoutEntities(exerciseEntities);
+//
+//    workoutRepository.saveAll(workoutEntities);
   }
 
   private List<ExerciseEntity> generateExercises() {
@@ -58,25 +57,26 @@ public class DataLoader implements ApplicationRunner {
   }
 
   private List<WorkoutEntity> generateWorkoutEntities(List<ExerciseEntity> exerciseEntities) {
-    ExerciseSetEntity tricepPushdownSet1 = ExerciseSetEntity.builder()
-        .numberOfReps(8)
-        .weightKg(10D)
-        .status(Status.COMPLETED)
-        .build();
+//    ExerciseSetEntity tricepPushdownSet1 = ExerciseSetEntity.builder()
+//        .numberOfReps(8)
+//        .weightKg(10D)
+//        .status(Status.COMPLETED)
+//        .build();
+//
+//    ExerciseSetEntity tricepPushdownSet2 = ExerciseSetEntity.builder()
+//        .numberOfReps(8)
+//        .weightKg(10D)
+//        .status(Status.COMPLETED)
+//        .build();
+//
+//    ExerciseSetEntity tricepPushdownSet3 = ExerciseSetEntity.builder()
+//        .numberOfReps(6)
+//        .weightKg(10D)
+//        .status(Status.FAILED)
+//        .build();
 
-    ExerciseSetEntity tricepPushdownSet2 = ExerciseSetEntity.builder()
-        .numberOfReps(8)
-        .weightKg(10D)
-        .status(Status.COMPLETED)
-        .build();
-
-    ExerciseSetEntity tricepPushdownSet3 = ExerciseSetEntity.builder()
-        .numberOfReps(6)
-        .weightKg(10D)
-        .status(Status.FAILED)
-        .build();
-
-    List<ExerciseSetEntity> exerciseSetEntities = Arrays.asList(tricepPushdownSet1, tricepPushdownSet2, tricepPushdownSet3);
+    List<ExerciseSetEntity> exerciseSetEntities = Collections.emptyList();
+        //Arrays.asList(tricepPushdownSet1, tricepPushdownSet2, tricepPushdownSet3);
 
     ExerciseActivityEntity tricepPushdowns = ExerciseActivityEntity.builder()
         .exercise(exerciseEntities.get(1))

@@ -1,5 +1,6 @@
 package com.evans.gymapp.persistence.entity;
 
+import com.evans.gymapp.persistence.entity.sets.ExerciseSetEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +23,8 @@ public class ExerciseActivityEntity {
   private ExerciseEntity exercise;
 
   @NonNull
-  @ElementCollection(fetch = FetchType.EAGER)
+  //@ElementCollection(fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.ALL)
   private List<ExerciseSetEntity> sets;
 
   private String notes;
