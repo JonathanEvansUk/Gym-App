@@ -23,8 +23,7 @@ public class ExerciseActivityEntity {
   private ExerciseEntity exercise;
 
   @NonNull
-  //@ElementCollection(fetch = FetchType.EAGER)
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ExerciseSetEntity> sets;
 
   private String notes;
