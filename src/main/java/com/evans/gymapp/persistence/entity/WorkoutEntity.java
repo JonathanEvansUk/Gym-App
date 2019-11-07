@@ -23,9 +23,9 @@ public class WorkoutEntity {
   private String name;
 
   @NonNull
+  @Enumerated(EnumType.STRING)
   private WorkoutType workoutType;
 
-  //TODO write tests to confirm preservation of order of insertion
   @NonNull
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ExerciseActivityEntity> exerciseActivities;

@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @Getter
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("1")
+@DiscriminatorValue("NonWeightedSet")
 public class NonWeightedSetEntity extends ExerciseSetEntity {
 
   @NonNull

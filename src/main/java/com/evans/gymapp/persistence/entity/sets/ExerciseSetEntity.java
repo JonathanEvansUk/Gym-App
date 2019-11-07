@@ -1,17 +1,19 @@
 package com.evans.gymapp.persistence.entity.sets;
 
 import com.evans.gymapp.domain.Status;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
 @AllArgsConstructor
-//TODO change discriminator type to string
-@DiscriminatorColumn(name = "set_type", discriminatorType = DiscriminatorType.INTEGER)
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "set_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class ExerciseSetEntity {
 
   @Id

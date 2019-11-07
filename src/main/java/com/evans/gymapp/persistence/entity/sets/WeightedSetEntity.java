@@ -10,11 +10,10 @@ import lombok.NonNull;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-//@Data
 @Getter
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue("2")
+@DiscriminatorValue("WeightedSet")
 public class WeightedSetEntity extends ExerciseSetEntity {
 
   @NonNull
