@@ -16,7 +16,7 @@ import java.util.List;
 public class WorkoutEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NonNull
