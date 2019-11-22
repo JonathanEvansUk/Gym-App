@@ -7,7 +7,7 @@ import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.sets.ExerciseSetEntity;
 import com.evans.gymapp.persistence.entity.sets.NonWeightedSetEntity;
 import com.evans.gymapp.persistence.entity.sets.WeightedSetEntity;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class ExerciseActivityRepositoryTest {
       .information("Information")
       .build();
 
-  @BeforeAll
+  @BeforeEach
   public void addBicepCurl() {
     exerciseRepository.save(BICEP_CURL);
   }
