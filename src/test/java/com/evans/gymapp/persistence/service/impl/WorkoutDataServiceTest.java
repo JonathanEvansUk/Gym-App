@@ -1,9 +1,6 @@
 package com.evans.gymapp.persistence.service.impl;
 
-import com.evans.gymapp.controller.CreateWorkoutRequest;
-import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
-import com.evans.gymapp.controller.ExerciseNotFoundException;
-import com.evans.gymapp.controller.WorkoutNotFoundException;
+import com.evans.gymapp.controller.*;
 import com.evans.gymapp.domain.*;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
@@ -100,15 +97,80 @@ public class WorkoutDataServiceTest {
   }
 
   @Test
+  public void editWorkout_workoutNotFound() {
+    EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
+        .workoutName("workoutName")
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(Instant.now())
+        .build();
+
+    long workoutId = 1L;
+
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.empty());
+
+    assertThrows(WorkoutNotFoundException.class, () -> workoutDataService.editWorkout(workoutId, editWorkoutRequest));
+
+    verify(workoutRepository).findById(workoutId);
+    verifyNoMoreInteractions(workoutRepository);
+    verifyZeroInteractions(workoutConverter);
+  }
+
+  @Test
+  public void editWorkout() throws WorkoutNotFoundException {
+    Instant now = Instant.now();
+
+    EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
+        .workoutName("workoutName")
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(now)
+        .build();
+
+    long workoutId = 1L;
+
+    WorkoutEntity currentlyStoredWorkout = createWorkoutEntity();
+
+    given(workoutRepository.findById(workoutId))
+        .willReturn(Optional.of(currentlyStoredWorkout));
+
+
+    WorkoutEntity updatedWorkoutEntity = createWorkoutEntity().toBuilder()
+        .name("workoutName")
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(now)
+        .build();
+
+    given(workoutRepository.save(updatedWorkoutEntity))
+        .willReturn(updatedWorkoutEntity);
+
+    Workout expectedWorkout = Workout.builder()
+        .id(workoutId)
+        .name("workoutName")
+        .workoutType(WorkoutType.ABS)
+        .performedAtTimestampUtc(now)
+        .build();
+
+    given(workoutConverter.convert(updatedWorkoutEntity))
+        .willReturn(expectedWorkout);
+
+    Workout editedWorkout = workoutDataService.editWorkout(workoutId, editWorkoutRequest);
+
+
+    assertEquals(expectedWorkout, editedWorkout);
+
+    verify(workoutRepository).findById(workoutId);
+    verify(workoutRepository).save(updatedWorkoutEntity);
+    verify(workoutConverter).convert(updatedWorkoutEntity);
+  }
+
+  @Test
   public void deleteWorkout_workoutNotFound() {
     long workoutId = 1L;
 
     given(workoutRepository.findById(workoutId))
         .willReturn(Optional.empty());
 
-    assertThrows(WorkoutNotFoundException.class, () -> {
-      workoutDataService.deleteWorkout(workoutId);
-    });
+    assertThrows(WorkoutNotFoundException.class, () -> workoutDataService.deleteWorkout(workoutId));
 
     verify(workoutRepository).findById(workoutId);
     verifyNoMoreInteractions(workoutRepository);

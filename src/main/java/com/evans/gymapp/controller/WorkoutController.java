@@ -79,10 +79,18 @@ public class WorkoutController {
   }
 
   @CrossOrigin
+  @PatchMapping("/workouts/{workoutId}")
+  public ResponseEntity<Workout> editWorkout(@PathVariable long workoutId, @Valid @RequestBody EditWorkoutRequest request) throws WorkoutNotFoundException {
+    Workout workout = workoutDataService.editWorkout(workoutId, request);
+
+    return ResponseEntity.ok(workout);
+  }
+
+  @CrossOrigin
   @DeleteMapping("/workouts/{workoutId}")
   public ResponseEntity deleteWorkout(@PathVariable long workoutId) throws WorkoutNotFoundException {
     workoutDataService.deleteWorkout(workoutId);
-  
+
     return ResponseEntity.ok().build();
   }
 

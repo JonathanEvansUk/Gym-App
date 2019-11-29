@@ -1,9 +1,6 @@
 package com.evans.gymapp.persistence.service.impl;
 
-import com.evans.gymapp.controller.CreateWorkoutRequest;
-import com.evans.gymapp.controller.ExerciseActivityNotFoundException;
-import com.evans.gymapp.controller.ExerciseNotFoundException;
-import com.evans.gymapp.controller.WorkoutNotFoundException;
+import com.evans.gymapp.controller.*;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
@@ -53,6 +50,22 @@ public class WorkoutDataService implements IWorkoutDataService {
     WorkoutEntity workoutEntity = createNewWorkoutEntity(request);
 
     WorkoutEntity savedWorkoutEntity = workoutRepository.save(workoutEntity);
+
+    return workoutConverter.convert(savedWorkoutEntity);
+  }
+
+  @Override
+  public Workout editWorkout(long workoutId, EditWorkoutRequest request) throws WorkoutNotFoundException {
+    WorkoutEntity workoutEntity = workoutRepository.findById(workoutId)
+        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+
+    WorkoutEntity updatedWorkoutEntity = workoutEntity.toBuilder()
+        .name(request.getWorkoutName())
+        .workoutType(request.getWorkoutType())
+        .performedAtTimestampUtc(request.getPerformedAtTimestampUtc())
+        .build();
+
+    WorkoutEntity savedWorkoutEntity = workoutRepository.save(updatedWorkoutEntity);
 
     return workoutConverter.convert(savedWorkoutEntity);
   }
