@@ -1,4 +1,4 @@
-package com.evans.gymapp.controller;
+package com.evans.gymapp.exception;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,14 @@
 package com.evans.gymapp.persistence.service;
 
-import com.evans.gymapp.controller.*;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
+import com.evans.gymapp.exception.ExerciseActivityNotFoundException;
+import com.evans.gymapp.exception.ExerciseNotFoundException;
+import com.evans.gymapp.exception.WorkoutNotFoundException;
+import com.evans.gymapp.request.CreateWorkoutRequest;
+import com.evans.gymapp.request.EditWorkoutRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IWorkoutDataService {
 
@@ -17,11 +20,7 @@ public interface IWorkoutDataService {
 
   List<Workout> getAllWorkouts();
 
-  Optional<Workout> getWorkoutById(long workoutId);
-
-  Optional<Workout> getWorkoutByName(String workoutName);
-
-  void updateSets(long workoutId, ExerciseActivity exerciseActivity);
+  Workout getWorkoutById(long workoutId);
 
   ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException;
 

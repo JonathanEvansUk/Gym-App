@@ -1,8 +1,10 @@
 package com.evans.gymapp.persistence.service.impl;
 
-import com.evans.gymapp.controller.*;
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
+import com.evans.gymapp.exception.ExerciseActivityNotFoundException;
+import com.evans.gymapp.exception.ExerciseNotFoundException;
+import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
@@ -10,6 +12,8 @@ import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.persistence.service.IWorkoutDataService;
+import com.evans.gymapp.request.CreateWorkoutRequest;
+import com.evans.gymapp.request.EditWorkoutRequest;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
@@ -20,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -96,23 +99,14 @@ public class WorkoutDataService implements IWorkoutDataService {
   }
 
   @Override
-  public Optional<Workout> getWorkoutById(long workoutId) {
+  public Workout getWorkoutById(long workoutId) {
     return workoutRepository.findById(workoutId)
-        .map(workoutConverter::convert);
+        .map(workoutConverter::convert)
+        .orElseThrow(ResourceNotFoundException::new);
   }
 
-  @Override
-  public Optional<Workout> getWorkoutByName(String workoutName) {
-    return workoutRepository.findByName(workoutName)
-        .map(workoutConverter::convert);
-  }
-
-  @Override
-  public void updateSets(long workoutId, ExerciseActivity exerciseActivity) {
-    ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
-    exerciseActivityRepository.save(exerciseActivityEntity);
-  }
-
+  // TODO this will change by adding workout to exerciseActivityEntity. Bidirectional relationship.
+  // Hence this will move to ExerciseActivityDataService
   @Override
   public ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException {
     // TODO change message in exception
@@ -137,6 +131,7 @@ public class WorkoutDataService implements IWorkoutDataService {
     return exerciseActivityConverter.convert(lastAddedExerciseActivity);
   }
 
+  // TODO move to exerciseActivityDataService
   @Override
   public ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
     WorkoutEntity workout = workoutRepository.findById(workoutId)
@@ -178,5 +173,8 @@ public class WorkoutDataService implements IWorkoutDataService {
         .exercise(exerciseEntity)
         .sets(Collections.emptyList())
         .build();
+  }
+
+  public static class ResourceNotFoundException extends RuntimeException {
   }
 }

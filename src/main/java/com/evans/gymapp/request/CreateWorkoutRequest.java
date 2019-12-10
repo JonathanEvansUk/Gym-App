@@ -1,16 +1,14 @@
-package com.evans.gymapp.controller;
+package com.evans.gymapp.request;
 
 import com.evans.gymapp.domain.WorkoutType;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 
 @Getter
 @Builder
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class CreateWorkoutRequest {
 

@@ -4,7 +4,5 @@ import com.evans.gymapp.domain.ExerciseActivity;
 
 public interface IExerciseActivityDataService {
 
-  void addExerciseActivity(ExerciseActivity exerciseActivity);
-
-  void deleteExerciseActivity(long exerciseActivityId);
+  void updateSets(long workoutId, ExerciseActivity exerciseActivity);
 }

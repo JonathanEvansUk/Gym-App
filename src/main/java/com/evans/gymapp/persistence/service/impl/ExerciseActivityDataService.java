@@ -21,15 +21,10 @@ public class ExerciseActivityDataService implements IExerciseActivityDataService
   @NonNull
   private final ExerciseActivityConverter exerciseActivityConverter;
 
+
   @Override
-  public void addExerciseActivity(ExerciseActivity exerciseActivity) {
+  public void updateSets(long workoutId, ExerciseActivity exerciseActivity) {
     ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
-
     exerciseActivityRepository.save(exerciseActivityEntity);
-  }
-
-  @Override
-  public void deleteExerciseActivity(long exerciseActivityId) {
-    exerciseActivityRepository.deleteById(exerciseActivityId);
   }
 }
