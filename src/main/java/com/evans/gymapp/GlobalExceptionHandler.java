@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.evans.gymapp.persistence.service.impl.WorkoutDataService.ResourceNotFoundException;
+import static com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

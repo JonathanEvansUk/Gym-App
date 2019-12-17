@@ -1,4 +1,4 @@
-package com.evans.gymapp.persistence.service;
+package com.evans.gymapp.service;
 
 import com.evans.gymapp.domain.ExerciseActivity;
 

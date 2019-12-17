@@ -1,4 +1,4 @@
-package com.evans.gymapp.persistence.service.impl;
+package com.evans.gymapp.service.impl;
 
 import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
@@ -8,12 +8,11 @@ import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
-import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
-import com.evans.gymapp.persistence.service.IWorkoutDataService;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
+import com.evans.gymapp.service.IWorkoutDataService;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
@@ -37,9 +36,6 @@ public class WorkoutDataService implements IWorkoutDataService {
   @NonNull
   //TODO remove this?
   private final ExerciseRepository exerciseRepository;
-
-  @NonNull
-  private final ExerciseActivityRepository exerciseActivityRepository;
 
   @NonNull
   private final WorkoutConverter workoutConverter;

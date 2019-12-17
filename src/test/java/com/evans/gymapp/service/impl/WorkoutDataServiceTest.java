@@ -1,4 +1,4 @@
-package com.evans.gymapp.persistence.service.impl;
+package com.evans.gymapp.service.impl;
 
 import com.evans.gymapp.domain.*;
 import com.evans.gymapp.exception.ExerciseActivityNotFoundException;
@@ -10,8 +10,8 @@ import com.evans.gymapp.persistence.entity.WorkoutEntity;
 import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
-import com.evans.gymapp.persistence.service.IWorkoutDataService;
-import com.evans.gymapp.persistence.service.impl.WorkoutDataService.ResourceNotFoundException;
+import com.evans.gymapp.service.IWorkoutDataService;
+import com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
@@ -36,7 +36,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class WorkoutDataServiceTest {
 
-  private static final String WORKOUT_NAME = "workoutName";
   private static final String TRICEP_PUSHDOWN = "Tricep Pushdown";
 
   private IWorkoutDataService workoutDataService;
@@ -53,12 +52,9 @@ public class WorkoutDataServiceTest {
   @Mock
   private ExerciseActivityConverter exerciseActivityConverter;
 
-  @Mock
-  private ExerciseActivityRepository exerciseActivityRepository;
-
   @BeforeEach
   public void setUp() {
-    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, exerciseActivityRepository, workoutConverter, exerciseActivityConverter);
+    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, workoutConverter, exerciseActivityConverter);
   }
 
   @Test

@@ -3,7 +3,7 @@ package com.evans.gymapp.controller;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.exception.WorkoutNotFoundException;
-import com.evans.gymapp.persistence.service.IWorkoutDataService;
+import com.evans.gymapp.service.IWorkoutDataService;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.Instant;
 import java.util.*;
 
-import static com.evans.gymapp.persistence.service.impl.WorkoutDataService.ResourceNotFoundException;
+import static com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;

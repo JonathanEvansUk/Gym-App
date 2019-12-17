@@ -1,4 +1,4 @@
-package com.evans.gymapp.persistence.service.impl;
+package com.evans.gymapp.service.impl;
 
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.domain.ExerciseActivity;
@@ -6,7 +6,7 @@ import com.evans.gymapp.domain.MuscleGroup;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
-import com.evans.gymapp.persistence.service.IExerciseActivityDataService;
+import com.evans.gymapp.service.IExerciseActivityDataService;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
