@@ -21,7 +21,6 @@ public class ExerciseActivityDataService implements IExerciseActivityDataService
   @NonNull
   private final ExerciseActivityConverter exerciseActivityConverter;
 
-
   @Override
   public void updateSets(long workoutId, ExerciseActivity exerciseActivity) {
     ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
