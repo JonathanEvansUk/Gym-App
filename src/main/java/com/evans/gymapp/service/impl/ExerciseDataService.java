@@ -1,6 +1,8 @@
 package com.evans.gymapp.service.impl;
 
 import com.evans.gymapp.domain.Exercise;
+import com.evans.gymapp.exception.ExerciseNotFoundException;
+import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.service.IExerciseDataService;
 import com.evans.gymapp.util.converter.ExerciseConverter;
@@ -27,5 +29,13 @@ public class ExerciseDataService implements IExerciseDataService {
         .stream()
         .map(exerciseConverter::convert)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Exercise getExerciseById(long exerciseId) throws ExerciseNotFoundException {
+    ExerciseEntity exerciseEntity = exerciseRepository.findById(exerciseId)
+        .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
+
+    return exerciseConverter.convert(exerciseEntity);
   }
 }

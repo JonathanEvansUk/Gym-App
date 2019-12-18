@@ -1,6 +1,8 @@
 package com.evans.gymapp.controller;
 
 import com.evans.gymapp.domain.Exercise;
+import com.evans.gymapp.domain.MuscleGroup;
+import com.evans.gymapp.exception.ExerciseNotFoundException;
 import com.evans.gymapp.service.IExerciseDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,8 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,5 +52,48 @@ public class ExerciseControllerTest {
 
     verify(exerciseDataService)
         .getAllExercises();
+  }
+
+  @Test
+  public void getExerciseById_exerciseNotFound() throws Exception {
+
+    long exerciseId = 1L;
+
+    given(exerciseDataService.getExerciseById(exerciseId))
+        .willThrow(ExerciseNotFoundException.class);
+
+    mockMvc.perform(get("/exercises/{exerciseId}", exerciseId))
+        .andExpect(status().isNotFound())
+        .andReturn()
+        .getResponse();
+
+    verify(exerciseDataService).getExerciseById(exerciseId);
+  }
+
+  @Test
+  public void getExerciseById() throws Exception {
+
+    long exerciseId = 1L;
+
+    Exercise expectedExercise = Exercise.builder()
+        .id(exerciseId)
+        .name("Bicep Curl")
+        .muscleGroup(MuscleGroup.BICEP)
+        .information("Information")
+        .build();
+
+    given(exerciseDataService.getExerciseById(exerciseId))
+        .willReturn(expectedExercise);
+
+    MockHttpServletResponse response = mockMvc.perform(get("/exercises/{exerciseId}", exerciseId))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse();
+
+    Exercise exercise = objectMapper.readValue(response.getContentAsString(), Exercise.class);
+
+    assertEquals(expectedExercise, exercise);
+
+    verify(exerciseDataService).getExerciseById(exerciseId);
   }
 }
