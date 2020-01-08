@@ -5,6 +5,7 @@ import com.evans.gymapp.domain.MuscleGroup;
 import com.evans.gymapp.exception.ExerciseNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
+import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.service.IExerciseDataService;
 import com.evans.gymapp.util.converter.ExerciseConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,11 +33,14 @@ public class ExerciseDataServiceTest {
   private ExerciseRepository exerciseRepository;
 
   @Mock
+  private WorkoutRepository workoutRepository;
+
+  @Mock
   private ExerciseConverter exerciseConverter;
 
   @BeforeEach
   public void setUp() {
-    exerciseDataService = new ExerciseDataService(exerciseRepository, exerciseConverter);
+    exerciseDataService = new ExerciseDataService(exerciseRepository, workoutRepository, exerciseConverter);
   }
 
   @Test

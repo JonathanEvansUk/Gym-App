@@ -2,6 +2,7 @@ package com.evans.gymapp.controller;
 
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.exception.ExerciseNotFoundException;
+import com.evans.gymapp.request.GetExerciseMetricsResponse;
 import com.evans.gymapp.service.IExerciseDataService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,10 @@ public class ExerciseController {
   @GetMapping("/exercises/{exerciseId}")
   public Exercise getExerciseById(@PathVariable long exerciseId) throws ExerciseNotFoundException {
     return exerciseDataService.getExerciseById(exerciseId);
+  }
+
+  @GetMapping("/exercises/{exerciseId}/metrics")
+  public GetExerciseMetricsResponse getExerciseMetricsById(@PathVariable long exerciseId) throws ExerciseNotFoundException {
+    return exerciseDataService.getExerciseMetricsById(exerciseId);
   }
 }
