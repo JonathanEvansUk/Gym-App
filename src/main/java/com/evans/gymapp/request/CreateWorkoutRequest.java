@@ -13,10 +13,6 @@ import java.time.Instant;
 public class CreateWorkoutRequest {
 
   @NonNull
-  @NotBlank
-  private final String workoutName;
-
-  @NonNull
   private final WorkoutType workoutType;
 
   @NonNull

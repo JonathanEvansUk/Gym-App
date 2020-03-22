@@ -21,7 +21,6 @@ public class WorkoutConverter {
   public Workout convert(WorkoutEntity workoutEntity) {
     return Workout.builder()
         .id(workoutEntity.getId())
-        .name(workoutEntity.getName())
         .performedAtTimestampUtc(workoutEntity.getPerformedAtTimestampUtc())
         .workoutType(workoutEntity.getWorkoutType())
         .exerciseActivities(convertExerciseEntityActivity(workoutEntity.getExerciseActivities()))
@@ -37,7 +36,6 @@ public class WorkoutConverter {
   public WorkoutEntity convert(Workout workout) {
     return WorkoutEntity.builder()
         .id(workout.getId())
-        .name(workout.getName())
         .performedAtTimestampUtc(workout.getPerformedAtTimestampUtc())
         .workoutType(workout.getWorkoutType())
         .exerciseActivities(convertExerciseActivity(workout.getExerciseActivities()))

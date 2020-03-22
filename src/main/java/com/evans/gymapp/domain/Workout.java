@@ -13,7 +13,6 @@ import java.util.List;
 public class Workout {
 
   private final Long id;
-  private final String name;
   private final WorkoutType workoutType;
   private final List<ExerciseActivity> exerciseActivities;
   private final Instant performedAtTimestampUtc;

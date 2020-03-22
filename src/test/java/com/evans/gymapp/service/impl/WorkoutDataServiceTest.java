@@ -7,13 +7,12 @@ import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
-import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
-import com.evans.gymapp.service.IWorkoutDataService;
-import com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
+import com.evans.gymapp.service.IWorkoutDataService;
+import com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,17 +58,14 @@ public class WorkoutDataServiceTest {
 
   @Test
   public void addWorkout() {
-    String workoutName = "workoutName";
     Instant performedAtTimestampUtc = Instant.now();
 
     CreateWorkoutRequest request = CreateWorkoutRequest.builder()
-        .workoutName(workoutName)
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(performedAtTimestampUtc)
         .build();
 
     WorkoutEntity workoutEntityFromRequest = WorkoutEntity.builder()
-        .name(workoutName)
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(performedAtTimestampUtc)
         .exerciseActivities(Collections.emptyList())
@@ -79,7 +75,6 @@ public class WorkoutDataServiceTest {
         .willReturn(workoutEntityFromRequest);
 
     Workout expectedWorkout = Workout.builder()
-        .name(workoutName)
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(performedAtTimestampUtc)
         .exerciseActivities(Collections.emptyList())
@@ -135,7 +130,6 @@ public class WorkoutDataServiceTest {
 
 
     WorkoutEntity updatedWorkoutEntity = createWorkoutEntity().toBuilder()
-        .name("workoutName")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
         .build();
@@ -145,7 +139,6 @@ public class WorkoutDataServiceTest {
 
     Workout expectedWorkout = Workout.builder()
         .id(workoutId)
-        .name("workoutName")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
         .build();
@@ -413,7 +406,6 @@ public class WorkoutDataServiceTest {
 
   private Workout createWorkout() {
     return Workout.builder()
-        .name("workout1")
         .workoutType(WorkoutType.ABS)
         .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(Instant.now())
@@ -423,7 +415,6 @@ public class WorkoutDataServiceTest {
 
   private WorkoutEntity createWorkoutEntity() {
     return WorkoutEntity.builder()
-        .name("workout1")
         .workoutType(WorkoutType.ABS)
         .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(Instant.now())

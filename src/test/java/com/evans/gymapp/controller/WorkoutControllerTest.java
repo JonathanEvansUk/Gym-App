@@ -3,9 +3,9 @@ package com.evans.gymapp.controller;
 import com.evans.gymapp.domain.Workout;
 import com.evans.gymapp.domain.WorkoutType;
 import com.evans.gymapp.exception.WorkoutNotFoundException;
-import com.evans.gymapp.service.IWorkoutDataService;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
+import com.evans.gymapp.service.IWorkoutDataService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,6 @@ public class WorkoutControllerTest {
 
     Workout workout = Workout.builder()
         .id(1L)
-        .name("name")
         .workoutType(WorkoutType.ABS)
         .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(now)
@@ -84,7 +83,6 @@ public class WorkoutControllerTest {
 
     Workout workout = Workout.builder()
         .id(1L)
-        .name("name")
         .workoutType(WorkoutType.ABS)
         .exerciseActivities(Collections.emptyList())
         .performedAtTimestampUtc(now)
@@ -105,54 +103,17 @@ public class WorkoutControllerTest {
     verify(workoutDataService).getWorkoutById(1L);
   }
 
-  //TODO this test will probably be deleted as workoutName may become redundant
-  @Test
-  public void addWorkout_invalidRequest_blankName() throws Exception {
-
-    String BLANK_STRING = "";
-
-    CreateWorkoutRequest request = CreateWorkoutRequest.builder()
-        .workoutName(BLANK_STRING)
-        .workoutType(WorkoutType.ABS)
-        .performedAtTimestampUtc(Instant.now())
-        .build();
-
-    String jsonRequest = objectMapper.writeValueAsString(request);
-
-    MockHttpServletResponse response = mockMvc.perform(post("/workouts/")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(jsonRequest))
-        .andExpect(status().isBadRequest())
-        .andReturn()
-        .getResponse();
-
-
-    TypeReference<HashMap<String, String>> typeReference = new TypeReference<HashMap<String, String>>() {
-    };
-
-    Map<String, String> validationErrors = objectMapper.readValue(response.getContentAsString(), typeReference);
-
-    assertTrue(validationErrors.containsKey("workoutName"));
-
-    //TODO replace string constant with property maybe
-    assertEquals("must not be blank", validationErrors.get("workoutName"));
-
-    verifyZeroInteractions(workoutDataService);
-  }
-
   @Test
   public void addWorkout() throws Exception {
     Instant now = Instant.now();
 
     CreateWorkoutRequest request = CreateWorkoutRequest.builder()
-        .workoutName("name")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
         .build();
 
     Workout workout = Workout.builder()
         .id(1L)
-        .name("name")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
         .build();
@@ -250,7 +211,6 @@ public class WorkoutControllerTest {
 
     Workout expectedWorkout = Workout.builder()
         .id(workoutId)
-        .name("new name")
         .workoutType(WorkoutType.LEGS)
         .performedAtTimestampUtc(now)
         .build();

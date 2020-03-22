@@ -20,9 +20,6 @@ public class WorkoutEntity {
   private Long id;
 
   @NonNull
-  private String name;
-
-  @NonNull
   @Enumerated(EnumType.STRING)
   private WorkoutType workoutType;
 

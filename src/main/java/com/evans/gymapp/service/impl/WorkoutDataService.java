@@ -58,8 +58,8 @@ public class WorkoutDataService implements IWorkoutDataService {
     WorkoutEntity workoutEntity = workoutRepository.findById(workoutId)
         .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
 
+    // TODO should this be in a converter?
     WorkoutEntity updatedWorkoutEntity = workoutEntity.toBuilder()
-        .name(request.getWorkoutName())
         .workoutType(request.getWorkoutType())
         .performedAtTimestampUtc(request.getPerformedAtTimestampUtc())
         .build();
@@ -79,7 +79,6 @@ public class WorkoutDataService implements IWorkoutDataService {
 
   private WorkoutEntity createNewWorkoutEntity(CreateWorkoutRequest request) {
     return WorkoutEntity.builder()
-        .name(request.getWorkoutName())
         .workoutType(request.getWorkoutType())
         .performedAtTimestampUtc(request.getPerformedAtTimestampUtc())
         .exerciseActivities(Collections.emptyList())
