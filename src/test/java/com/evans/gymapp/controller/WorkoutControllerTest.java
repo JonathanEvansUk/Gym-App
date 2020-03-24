@@ -138,46 +138,10 @@ public class WorkoutControllerTest {
   }
 
   @Test
-  public void editWorkout_invalidRequest_blankName() throws Exception {
-
-    String BLANK_STRING = "";
-
-    long workoutId = 1L;
-
-    EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
-        .workoutName(BLANK_STRING)
-        .workoutType(WorkoutType.LEGS)
-        .performedAtTimestampUtc(Instant.now())
-        .build();
-
-    String jsonRequest = objectMapper.writeValueAsString(editWorkoutRequest);
-
-    MockHttpServletResponse response = mockMvc.perform(patch("/workouts/{workoutId}", workoutId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(jsonRequest))
-        .andExpect(status().isBadRequest())
-        .andReturn()
-        .getResponse();
-
-    TypeReference<HashMap<String, String>> typeReference = new TypeReference<HashMap<String, String>>() {
-    };
-
-    Map<String, String> validationErrors = objectMapper.readValue(response.getContentAsString(), typeReference);
-
-    assertTrue(validationErrors.containsKey("workoutName"));
-
-    //TODO replace string constant with property maybe
-    assertEquals("must not be blank", validationErrors.get("workoutName"));
-
-    verifyZeroInteractions(workoutDataService);
-  }
-
-  @Test
   public void editWorkout_workoutNotFound() throws Exception {
     long workoutId = 1L;
 
     EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
-        .workoutName("new name")
         .workoutType(WorkoutType.LEGS)
         .performedAtTimestampUtc(Instant.now())
         .build();
@@ -204,7 +168,6 @@ public class WorkoutControllerTest {
     Instant now = Instant.now();
 
     EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
-        .workoutName("new name")
         .workoutType(WorkoutType.LEGS)
         .performedAtTimestampUtc(now)
         .build();

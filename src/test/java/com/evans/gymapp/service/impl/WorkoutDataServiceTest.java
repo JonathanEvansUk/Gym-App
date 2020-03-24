@@ -94,7 +94,6 @@ public class WorkoutDataServiceTest {
   @Test
   public void editWorkout_workoutNotFound() {
     EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
-        .workoutName("workoutName")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(Instant.now())
         .build();
@@ -116,7 +115,6 @@ public class WorkoutDataServiceTest {
     Instant now = Instant.now();
 
     EditWorkoutRequest editWorkoutRequest = EditWorkoutRequest.builder()
-        .workoutName("workoutName")
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
         .build();
