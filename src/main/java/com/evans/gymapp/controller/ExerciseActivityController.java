@@ -23,7 +23,7 @@ public class ExerciseActivityController {
   @NonNull
   private final IWorkoutDataService workoutDataService;
 
-  //TODO update this endpoint
+  //TODO update this endpoint, and add constants
   @PatchMapping("/workouts/{workoutId}/updateSets")
   public void updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) {
     exerciseActivityDataService.updateSets(workoutId, exerciseActivity);
