@@ -1,10 +1,7 @@
 package com.evans.gymapp.persistence.entity.sets;
 
 import com.evans.gymapp.domain.Status;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -12,6 +9,7 @@ import javax.persistence.Entity;
 @Getter
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("NonWeightedSet")
 public class NonWeightedSetEntity extends ExerciseSetEntity {
 
