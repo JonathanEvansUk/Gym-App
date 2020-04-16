@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @RequiredArgsConstructor
 public class ExerciseActivity {
 

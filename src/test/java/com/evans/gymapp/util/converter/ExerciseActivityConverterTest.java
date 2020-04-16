@@ -2,8 +2,6 @@ package com.evans.gymapp.util.converter;
 
 import com.evans.gymapp.domain.Exercise;
 import com.evans.gymapp.domain.ExerciseActivity;
-import com.evans.gymapp.domain.MuscleGroup;
-import com.evans.gymapp.domain.Status;
 import com.evans.gymapp.domain.sets.ExerciseSet;
 import com.evans.gymapp.domain.sets.WeightedSet;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
@@ -17,8 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
-import java.util.List;
 
+import static com.evans.gymapp.domain.MuscleGroup.BICEP;
+import static com.evans.gymapp.domain.Status.COMPLETED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -35,6 +34,59 @@ public class ExerciseActivityConverterTest {
   @Mock
   private ExerciseSetConverter exerciseSetConverter;
 
+  private static final long EXERCISE_ID = 1L;
+  private static final String EXERCISE_NAME = "Bicep Curl";
+  private static final String EXERCISE_INFORMATION = "Bicep Curl with Dumbbell";
+
+  private static final ExerciseEntity EXERCISE_ENTITY = ExerciseEntity.builder()
+      .id(EXERCISE_ID)
+      .name(EXERCISE_NAME)
+      .information(EXERCISE_INFORMATION)
+      .muscleGroup(BICEP)
+      .build();
+
+  private static final Exercise EXERCISE = Exercise.builder()
+      .id(EXERCISE_ID)
+      .name(EXERCISE_NAME)
+      .information(EXERCISE_INFORMATION)
+      .muscleGroup(BICEP)
+      .build();
+
+  private static final long EXERCISE_SET_ID = 1L;
+  private static final double WEIGHT_KG = 5D;
+  private static final int NUMBER_OF_REPS = 10;
+
+  private static final ExerciseSetEntity EXERCISE_SET_ENTITY = WeightedSetEntity.builder()
+      .id(EXERCISE_SET_ID)
+      .weightKg(WEIGHT_KG)
+      .numberOfReps(NUMBER_OF_REPS)
+      .status(COMPLETED)
+      .build();
+
+  private static final ExerciseSet EXERCISE_SET = WeightedSet.builder()
+      .id(EXERCISE_SET_ID)
+      .weightKg(WEIGHT_KG)
+      .numberOfReps(NUMBER_OF_REPS)
+      .status(COMPLETED)
+      .build();
+
+  private static final long EXERCISE_ACTIVITY_ID = 1L;
+  private static final String NOTES = "Some notes";
+
+  private static final ExerciseActivity EXERCISE_ACTIVITY = ExerciseActivity.builder()
+      .id(EXERCISE_ACTIVITY_ID)
+      .exercise(EXERCISE)
+      .sets(Collections.singletonList(EXERCISE_SET))
+      .notes(NOTES)
+      .build();
+
+  private static final ExerciseActivityEntity EXERCISE_ACTIVITY_ENTITY = ExerciseActivityEntity.builder()
+      .id(EXERCISE_ACTIVITY_ID)
+      .exercise(EXERCISE_ENTITY)
+      .sets(Collections.singletonList(EXERCISE_SET_ENTITY))
+      .notes(NOTES)
+      .build();
+
   @BeforeEach
   public void setUp() {
     exerciseActivityConverter = new ExerciseActivityConverter(exerciseConverter, exerciseSetConverter);
@@ -42,185 +94,75 @@ public class ExerciseActivityConverterTest {
 
   @Test
   public void convertFromEntity_noSets() {
-    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
-
-    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
-        .id(1L)
-        .exercise(exerciseEntity)
+    ExerciseActivityEntity exerciseActivityEntity = EXERCISE_ACTIVITY_ENTITY.toBuilder()
         .sets(Collections.emptyList())
-        .notes("Some notes")
         .build();
 
-    Exercise expectedExercise = Exercise.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
+    ExerciseActivity expectedExerciseActivity = EXERCISE_ACTIVITY.toBuilder()
+        .sets(Collections.emptyList())
         .build();
 
-    given(exerciseConverter.convert(exerciseEntity))
-        .willReturn(expectedExercise);
+    given(exerciseConverter.convert(EXERCISE_ENTITY))
+        .willReturn(EXERCISE);
 
     ExerciseActivity exerciseActivity = exerciseActivityConverter.convert(exerciseActivityEntity);
 
-    assertEquals(exerciseActivityEntity.getId(), exerciseActivity.getId());
-    assertEquals(expectedExercise, exerciseActivity.getExercise());
-    assertEquals(Collections.emptyList(), exerciseActivity.getSets());
-    assertEquals(exerciseActivityEntity.getNotes(), exerciseActivity.getNotes());
+    assertEquals(expectedExerciseActivity, exerciseActivity);
 
-    verify(exerciseConverter).convert(exerciseEntity);
+    verify(exerciseConverter).convert(EXERCISE_ENTITY);
     verifyZeroInteractions(exerciseSetConverter);
   }
 
   @Test
   public void convertFromEntity() {
-    ExerciseEntity exerciseEntity = ExerciseEntity.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
+    given(exerciseConverter.convert(EXERCISE_ENTITY))
+        .willReturn(EXERCISE);
 
-    ExerciseSetEntity exerciseSetEntity = WeightedSetEntity.builder()
-        .id(1L)
-        .weightKg(5D)
-        .numberOfReps(10)
-        .status(Status.COMPLETED)
-        .build();
+    given(exerciseSetConverter.convert(EXERCISE_SET_ENTITY))
+        .willReturn(EXERCISE_SET);
 
-    List<ExerciseSetEntity> exerciseSetEntities = Collections.singletonList(exerciseSetEntity);
+    ExerciseActivity exerciseActivity = exerciseActivityConverter.convert(EXERCISE_ACTIVITY_ENTITY);
 
-    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
-        .id(1L)
-        .exercise(exerciseEntity)
-        .sets(exerciseSetEntities)
-        .notes("Some notes")
-        .build();
+    assertEquals(EXERCISE_ACTIVITY, exerciseActivity);
 
-    Exercise expectedExercise = Exercise.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
-
-    given(exerciseConverter.convert(exerciseEntity))
-        .willReturn(expectedExercise);
-
-    ExerciseSet expectedExerciseSet = WeightedSet.builder()
-        .id(1L)
-        .weightKg(5D)
-        .numberOfReps(10)
-        .status(Status.COMPLETED)
-        .build();
-
-    given(exerciseSetConverter.convert(exerciseSetEntity))
-        .willReturn(expectedExerciseSet);
-
-    ExerciseActivity exerciseActivity = exerciseActivityConverter.convert(exerciseActivityEntity);
-
-    assertEquals(exerciseActivityEntity.getId(), exerciseActivity.getId());
-    assertEquals(expectedExercise, exerciseActivity.getExercise());
-    assertEquals(Collections.singletonList(expectedExerciseSet), exerciseActivity.getSets());
-    assertEquals(exerciseActivityEntity.getNotes(), exerciseActivity.getNotes());
-
-    verify(exerciseConverter).convert(exerciseEntity);
-    verify(exerciseSetConverter).convert(exerciseSetEntity);
+    verify(exerciseConverter).convert(EXERCISE_ENTITY);
+    verify(exerciseSetConverter).convert(EXERCISE_SET_ENTITY);
   }
 
   @Test
   public void convertToEntity_noSets() {
-    Exercise exercise = Exercise.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
-
-    ExerciseActivity exerciseActivity = ExerciseActivity.builder()
-        .id(1L)
-        .exercise(exercise)
+    ExerciseActivity exerciseActivity = EXERCISE_ACTIVITY.toBuilder()
         .sets(Collections.emptyList())
-        .notes("Some notes")
         .build();
 
-    ExerciseEntity expectedExercise = ExerciseEntity.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
+    ExerciseActivityEntity expectedExerciseActivityEntity = EXERCISE_ACTIVITY_ENTITY.toBuilder()
+        .sets(Collections.emptyList())
         .build();
 
-    given(exerciseConverter.convert(exercise))
-        .willReturn(expectedExercise);
+    given(exerciseConverter.convert(EXERCISE))
+        .willReturn(EXERCISE_ENTITY);
 
     ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
 
-    assertEquals(exerciseActivity.getId(), exerciseActivityEntity.getId());
-    assertEquals(expectedExercise, exerciseActivityEntity.getExercise());
-    assertEquals(Collections.emptyList(), exerciseActivityEntity.getSets());
-    assertEquals(exerciseActivity.getNotes(), exerciseActivityEntity.getNotes());
+    assertEquals(expectedExerciseActivityEntity, exerciseActivityEntity);
 
-    verify(exerciseConverter).convert(exercise);
+    verify(exerciseConverter).convert(EXERCISE);
     verifyZeroInteractions(exerciseSetConverter);
   }
 
   @Test
   public void convertToEntity() {
-    Exercise exercise = Exercise.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
+    given(exerciseConverter.convert(EXERCISE))
+        .willReturn(EXERCISE_ENTITY);
 
-    ExerciseSet exerciseSet = WeightedSet.builder()
-        .id(1L)
-        .weightKg(5D)
-        .numberOfReps(10)
-        .status(Status.COMPLETED)
-        .build();
+    given(exerciseSetConverter.convert(EXERCISE_SET))
+        .willReturn(EXERCISE_SET_ENTITY);
 
-    ExerciseActivity exerciseActivity = ExerciseActivity.builder()
-        .id(1L)
-        .exercise(exercise)
-        .sets(Collections.singletonList(exerciseSet))
-        .notes("Some notes")
-        .build();
+    ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(EXERCISE_ACTIVITY);
 
-    ExerciseEntity expectedExercise = ExerciseEntity.builder()
-        .id(1L)
-        .name("Bicep Curl")
-        .information("Bicep Curl with Dumbbell")
-        .muscleGroup(MuscleGroup.BICEP)
-        .build();
+    assertEquals(EXERCISE_ACTIVITY_ENTITY, exerciseActivityEntity);
 
-    given(exerciseConverter.convert(exercise))
-        .willReturn(expectedExercise);
-
-    ExerciseSetEntity expectedExerciseSet = WeightedSetEntity.builder()
-        .id(1L)
-        .weightKg(5D)
-        .numberOfReps(10)
-        .status(Status.COMPLETED)
-        .build();
-
-    given(exerciseSetConverter.convert(exerciseSet))
-        .willReturn(expectedExerciseSet);
-
-    ExerciseActivityEntity exerciseActivityEntity = exerciseActivityConverter.convert(exerciseActivity);
-
-    assertEquals(exerciseActivity.getId(), exerciseActivityEntity.getId());
-    assertEquals(expectedExercise, exerciseActivityEntity.getExercise());
-    assertEquals(Collections.singletonList(expectedExerciseSet), exerciseActivityEntity.getSets());
-    assertEquals(exerciseActivity.getNotes(), exerciseActivityEntity.getNotes());
-
-    verify(exerciseConverter).convert(exercise);
-    verify(exerciseSetConverter).convert(exerciseSet);
+    verify(exerciseConverter).convert(EXERCISE);
+    verify(exerciseSetConverter).convert(EXERCISE_SET);
   }
 }
