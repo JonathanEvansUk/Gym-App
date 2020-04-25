@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @RequiredArgsConstructor
 public class Workout {
 

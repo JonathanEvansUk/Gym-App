@@ -24,6 +24,7 @@ public class WorkoutConverter {
         .performedAtTimestampUtc(workoutEntity.getPerformedAtTimestampUtc())
         .workoutType(workoutEntity.getWorkoutType())
         .exerciseActivities(convertExerciseEntityActivity(workoutEntity.getExerciseActivities()))
+        .notes(workoutEntity.getNotes())
         .build();
   }
 
@@ -39,6 +40,7 @@ public class WorkoutConverter {
         .performedAtTimestampUtc(workout.getPerformedAtTimestampUtc())
         .workoutType(workout.getWorkoutType())
         .exerciseActivities(convertExerciseActivity(workout.getExerciseActivities()))
+        .notes(workout.getNotes())
         .build();
   }
 
