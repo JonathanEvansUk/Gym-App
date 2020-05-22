@@ -29,9 +29,7 @@ public class ExerciseSetDeserializationTest {
   public void testDeserialize_badJson() {
     String json = "";
 
-    assertThrows(IOException.class, () -> {
-      objectMapper.readValue(json, ExerciseSet.class);
-    });
+    assertThrows(IOException.class, () -> objectMapper.readValue(json, ExerciseSet.class));
   }
 
   @Test

@@ -8,6 +8,7 @@ import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
+import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.request.CreateWorkoutRequest;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +36,9 @@ public class WorkoutDataService implements IWorkoutDataService {
   @NonNull
   //TODO remove this?
   private final ExerciseRepository exerciseRepository;
+
+  @NonNull
+  private final ExerciseActivityRepository exerciseActivityRepository;
 
   @NonNull
   private final WorkoutConverter workoutConverter;
@@ -100,72 +103,36 @@ public class WorkoutDataService implements IWorkoutDataService {
         .orElseThrow(ResourceNotFoundException::new);
   }
 
-  // TODO this will change by adding workout to exerciseActivityEntity. Bidirectional relationship.
-  // Hence this will move to ExerciseActivityDataService
   @Override
   public ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException {
     // TODO change message in exception
-    ExerciseEntity exerciseEntity = exerciseRepository.findById(exerciseId)
+    ExerciseEntity exercise = exerciseRepository.findById(exerciseId)
         .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
 
     // TODO change message in exception
-    WorkoutEntity workoutEntity = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
-
-    ExerciseActivityEntity exerciseActivityEntity = createEmptyExerciseActivity(exerciseEntity);
-
-    WorkoutEntity updatedWorkoutEntity = createWorkoutWithNewExerciseActivity(workoutEntity, exerciseActivityEntity);
-
-    // TODO is there a better way to do the below?
-    WorkoutEntity savedWorkoutEntity = workoutRepository.save(updatedWorkoutEntity);
-
-    List<ExerciseActivityEntity> exerciseActivities = savedWorkoutEntity.getExerciseActivities();
-
-    ExerciseActivityEntity lastAddedExerciseActivity = exerciseActivities.get(exerciseActivities.size() - 1);
-
-    return exerciseActivityConverter.convert(lastAddedExerciseActivity);
-  }
-
-  // TODO move to exerciseActivityDataService
-  @Override
-  public ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
     WorkoutEntity workout = workoutRepository.findById(workoutId)
         .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
 
-    //fetch the exerciseActivityEntity to be removed, we will return this after successful deletion
-    ExerciseActivityEntity exerciseActivityToDelete = workout.getExerciseActivities()
-        .stream()
-        .filter(exerciseActivity -> Long.valueOf(exerciseActivityId).equals(exerciseActivity.getId()))
-        .findFirst()
+    ExerciseActivityEntity newExerciseActivity = createNewExerciseActivity(exercise, workout);
+
+    return exerciseActivityConverter.convert(exerciseActivityRepository.save(newExerciseActivity));
+  }
+
+  @Override
+  public ExerciseActivity deleteExerciseActivity(long exerciseActivityId) throws ExerciseActivityNotFoundException {
+    // TODO change message in exception
+    ExerciseActivityEntity exerciseActivity = exerciseActivityRepository.findById(exerciseActivityId)
         .orElseThrow(() -> new ExerciseActivityNotFoundException("exercise activity not found"));
 
-    List<ExerciseActivityEntity> exerciseActivityEntities = new ArrayList<>(workout.getExerciseActivities());
-    exerciseActivityEntities.remove(exerciseActivityToDelete);
+    exerciseActivityRepository.deleteById(exerciseActivityId);
 
-    WorkoutEntity updatedWorkout = workout.toBuilder()
-        .exerciseActivities(exerciseActivityEntities)
-        .build();
-
-    //TODO check if this has to happen in this order.
-    //To get this to work in this order I had to add Fetch type EAGER to exerciseSets in exerciseActivityEntity
-    //Do we need to save workout, or can we directly remove exercise activity entity
-    workoutRepository.save(updatedWorkout);
-
-    return exerciseActivityConverter.convert(exerciseActivityToDelete);
+    return exerciseActivityConverter.convert(exerciseActivity);
   }
 
-  private WorkoutEntity createWorkoutWithNewExerciseActivity(WorkoutEntity originalWorkoutEntity, ExerciseActivityEntity exerciseActivityEntity) {
-    List<ExerciseActivityEntity> exerciseActivities = new ArrayList<>(originalWorkoutEntity.getExerciseActivities());
-    exerciseActivities.add(exerciseActivityEntity);
-
-    return originalWorkoutEntity.toBuilder()
-        .exerciseActivities(exerciseActivities)
-        .build();
-  }
-
-  private ExerciseActivityEntity createEmptyExerciseActivity(ExerciseEntity exerciseEntity) {
+  private ExerciseActivityEntity createNewExerciseActivity(ExerciseEntity exercise, WorkoutEntity workout) {
     return ExerciseActivityEntity.builder()
-        .exercise(exerciseEntity)
+        .exercise(exercise)
+        .workout(workout)
         .sets(Collections.emptyList())
         .build();
   }

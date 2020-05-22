@@ -1,6 +1,7 @@
 package com.evans.gymapp.persistence.entity.sets;
 
 import com.evans.gymapp.domain.Status;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
@@ -17,8 +18,8 @@ public class NonWeightedSetEntity extends ExerciseSetEntity {
   private String weight;
 
   @Builder
-  public NonWeightedSetEntity(Long id, @NonNull Integer numberOfReps, @NonNull Status status, @NonNull String weight) {
-    super(id, numberOfReps, status);
+  public NonWeightedSetEntity(Long id, ExerciseActivityEntity exerciseActivityEntity, @NonNull Integer numberOfReps, @NonNull Status status, @NonNull String weight) {
+    super(id, exerciseActivityEntity, numberOfReps, status);
     this.weight = weight;
   }
 }

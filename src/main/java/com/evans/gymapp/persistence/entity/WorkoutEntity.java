@@ -13,7 +13,16 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NamedEntityGraph(name = WorkoutEntity.WORKOUT_EXERCISE_ACTIVITIES,
+    attributeNodes = @NamedAttributeNode(value = "exerciseActivities",
+        subgraph = WorkoutEntity.EXERCISE_ACTIVITIES_EXERCISE),
+    subgraphs = @NamedSubgraph(name = WorkoutEntity.EXERCISE_ACTIVITIES_EXERCISE,
+        attributeNodes = @NamedAttributeNode(value = "exercise"))
+)
 public class WorkoutEntity {
+
+  public static final String WORKOUT_EXERCISE_ACTIVITIES = "workout.exerciseActivities";
+  public static final String EXERCISE_ACTIVITIES_EXERCISE = "exerciseActivities.exercise";
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +33,7 @@ public class WorkoutEntity {
   private WorkoutType workoutType;
 
   @NonNull
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ExerciseActivityEntity> exerciseActivities;
 
   @NonNull

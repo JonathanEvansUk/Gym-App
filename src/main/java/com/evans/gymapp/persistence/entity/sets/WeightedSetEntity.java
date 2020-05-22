@@ -2,6 +2,7 @@ package com.evans.gymapp.persistence.entity.sets;
 
 
 import com.evans.gymapp.domain.Status;
+import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
@@ -18,8 +19,8 @@ public class WeightedSetEntity extends ExerciseSetEntity {
   private Double weightKg;
 
   @Builder
-  public WeightedSetEntity(Long id, @NonNull Integer numberOfReps, @NonNull Status status, @NonNull Double weightKg) {
-    super(id, numberOfReps, status);
+  public WeightedSetEntity(Long id, ExerciseActivityEntity exerciseActivityEntity, @NonNull Integer numberOfReps, @NonNull Status status, @NonNull Double weightKg) {
+    super(id, exerciseActivityEntity, numberOfReps, status);
     this.weightKg = weightKg;
   }
 }

@@ -1,16 +1,11 @@
 package com.evans.gymapp.util.converter;
 
 import com.evans.gymapp.domain.sets.ExerciseSet;
-import com.evans.gymapp.domain.sets.NonWeightedSet;
-import com.evans.gymapp.domain.sets.WeightedSet;
 import com.evans.gymapp.persistence.entity.sets.ExerciseSetEntity;
-import com.evans.gymapp.persistence.entity.sets.NonWeightedSetEntity;
-import com.evans.gymapp.persistence.entity.sets.WeightedSetEntity;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 

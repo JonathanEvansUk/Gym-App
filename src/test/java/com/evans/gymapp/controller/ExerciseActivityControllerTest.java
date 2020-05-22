@@ -139,33 +139,13 @@ public class ExerciseActivityControllerTest {
     verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
   }
 
-  @Test
-  public void deleteExerciseActivity_workoutNotFound() throws Exception {
-
-    long workoutId = 1L;
-    long exerciseActivityId = 1L;
-
-    given(workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId))
-        .willThrow(WorkoutNotFoundException.class);
-
-    mockMvc.perform(
-        delete("/workouts/{workoutId}/exerciseActivity/{exerciseActivityId}", workoutId, exerciseActivityId)
-            .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isNotFound())
-        .andReturn()
-        .getResponse();
-
-    verify(workoutDataService).deleteExerciseActivity(workoutId, exerciseActivityId);
-  }
-
-
   // TODO may need to update tests to see what exception details include
   @Test
   public void deleteExerciseActivity_exerciseActivityNotFound() throws Exception {
     long workoutId = 1L;
     long exerciseActivityId = 1L;
 
-    given(workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId))
+    given(workoutDataService.deleteExerciseActivity(exerciseActivityId))
         .willThrow(ExerciseActivityNotFoundException.class);
 
     mockMvc.perform(
@@ -175,7 +155,7 @@ public class ExerciseActivityControllerTest {
         .andReturn()
         .getResponse();
 
-    verify(workoutDataService).deleteExerciseActivity(workoutId, exerciseActivityId);
+    verify(workoutDataService).deleteExerciseActivity(exerciseActivityId);
   }
 
   @Test
@@ -190,7 +170,7 @@ public class ExerciseActivityControllerTest {
         .notes("test")
         .build();
 
-    given(workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId))
+    given(workoutDataService.deleteExerciseActivity(exerciseActivityId))
         .willReturn(expectedExerciseActivity);
 
     MockHttpServletResponse response = mockMvc.perform(
@@ -204,7 +184,7 @@ public class ExerciseActivityControllerTest {
 
     assertEquals(expectedExerciseActivity, exerciseActivity);
 
-    verify(workoutDataService).deleteExerciseActivity(workoutId, exerciseActivityId);
+    verify(workoutDataService).deleteExerciseActivity(exerciseActivityId);
   }
 
   private Exercise createExercise() {

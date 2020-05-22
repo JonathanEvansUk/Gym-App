@@ -7,6 +7,7 @@ import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
 import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
+import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
 import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.request.CreateWorkoutRequest;
@@ -28,7 +29,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -51,9 +51,12 @@ public class WorkoutDataServiceTest {
   @Mock
   private ExerciseActivityConverter exerciseActivityConverter;
 
+  @Mock
+  private ExerciseActivityRepository exerciseActivityRepository;
+
   @BeforeEach
   public void setUp() {
-    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, workoutConverter, exerciseActivityConverter);
+    workoutDataService = new WorkoutDataService(workoutRepository, exerciseRepository, exerciseActivityRepository, workoutConverter, exerciseActivityConverter);
   }
 
   @Test
@@ -292,113 +295,64 @@ public class WorkoutDataServiceTest {
     given(workoutRepository.findById(workoutId))
         .willReturn(Optional.of(workoutEntity));
 
-    ExerciseActivityEntity newExerciseActivity = ExerciseActivityEntity.builder()
+    ExerciseActivityEntity exerciseActivityEntity = ExerciseActivityEntity.builder()
         .exercise(exerciseEntity)
+        .workout(workoutEntity)
         .sets(Collections.emptyList())
         .build();
 
-    WorkoutEntity updatedWorkoutEntity = workoutEntity.toBuilder()
-        .exerciseActivities(Collections.singletonList(newExerciseActivity))
+    ExerciseActivity expectedExerciseActivity = ExerciseActivity.builder()
+        .exercise(createExercise())
+        .sets(Collections.emptyList())
         .build();
+    given(exerciseActivityConverter.convert(exerciseActivityEntity))
+        .willReturn(expectedExerciseActivity);
 
-    given(workoutRepository.save(updatedWorkoutEntity))
-        .willReturn(updatedWorkoutEntity);
+    given(exerciseActivityRepository.save(exerciseActivityEntity))
+        .willReturn(exerciseActivityEntity);
 
-    Exercise exercise = createExercise();
-    ExerciseActivity exerciseActivity = createEmptyExerciseActivity(exercise);
+    ExerciseActivity exerciseActivity = workoutDataService.addExerciseActivity(workoutId, exerciseId);
 
-    given(exerciseActivityConverter.convert(newExerciseActivity))
-        .willReturn(exerciseActivity);
-
-    ExerciseActivity actualExerciseActivity = workoutDataService.addExerciseActivity(workoutId, exerciseId);
-    assertEquals(exerciseActivity, actualExerciseActivity);
-
+    assertEquals(expectedExerciseActivity, exerciseActivity);
     verify(exerciseRepository).findById(exerciseId);
     verify(workoutRepository).findById(workoutId);
-    verify(workoutRepository).save(updatedWorkoutEntity);
-    verify(exerciseActivityConverter).convert(newExerciseActivity);
-  }
-
-  @Test
-  public void deleteExerciseActivity_workoutNotFound() throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
-    long workoutId = 1L;
-    long exerciseActivityId = 2L;
-
-    given(workoutRepository.findById(workoutId))
-        .willReturn(Optional.empty());
-
-    assertThrows(WorkoutNotFoundException.class, () -> workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId));
-
-    verify(workoutRepository).findById(workoutId);
-    verifyNoMoreInteractions(workoutRepository);
-    verifyZeroInteractions(exerciseActivityConverter);
-  }
-
-  @Test
-  public void deleteExerciseActivity_noExerciseActivities() {
-    long workoutId = 1L;
-    long exerciseActivityId = 2L;
-
-    WorkoutEntity workoutEntity = createWorkoutEntity();
-
-    workoutEntity.setExerciseActivities(Collections.emptyList());
-
-    given(workoutRepository.findById(workoutId))
-        .willReturn(Optional.of(workoutEntity));
-
-    assertThrows(ExerciseActivityNotFoundException.class, () -> workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId));
-
-    verify(workoutRepository).findById(workoutId);
-    verifyNoMoreInteractions(workoutRepository);
-    verifyZeroInteractions(exerciseActivityConverter);
+    verify(exerciseActivityConverter).convert(exerciseActivityEntity);
+    verify(exerciseActivityRepository).save(exerciseActivityEntity);
   }
 
   @Test
   public void deleteExerciseActivity_exerciseActivityNotFound() {
-    long workoutId = 1L;
     long exerciseActivityId = 2L;
 
-    WorkoutEntity workoutEntity = createWorkoutEntity();
+    assertThrows(ExerciseActivityNotFoundException.class,
+        () -> workoutDataService.deleteExerciseActivity(exerciseActivityId));
 
-    ExerciseActivityEntity exerciseActivityEntity = createExerciseActivityEntity(1L);
-    workoutEntity.setExerciseActivities(Collections.singletonList(exerciseActivityEntity));
-
-    given(workoutRepository.findById(workoutId))
-        .willReturn(Optional.of(workoutEntity));
-
-    assertThrows(ExerciseActivityNotFoundException.class, () -> workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId));
-
-    verify(workoutRepository).findById(workoutId);
-    verifyNoMoreInteractions(workoutRepository);
+    verify(exerciseActivityRepository).findById(exerciseActivityId);
+    verifyNoMoreInteractions(exerciseActivityRepository);
     verifyZeroInteractions(exerciseActivityConverter);
   }
 
   @Test
-  public void deleteExerciseActivity() throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
-    long workoutId = 1L;
+  public void deleteExerciseActivity() throws ExerciseActivityNotFoundException {
     long exerciseActivityId = 2L;
 
-    WorkoutEntity workoutEntity = createWorkoutEntity();
-
     ExerciseActivityEntity exerciseActivityEntity = createExerciseActivityEntity(exerciseActivityId);
-    workoutEntity.setExerciseActivities(Collections.singletonList(exerciseActivityEntity));
 
-    given(workoutRepository.findById(workoutId))
-        .willReturn(Optional.of(workoutEntity));
+    given(exerciseActivityRepository.findById(exerciseActivityId))
+        .willReturn(Optional.of(exerciseActivityEntity));
 
-    ExerciseActivity expectedExerciseActivity = ExerciseActivity.builder()
-        .id(exerciseActivityId)
-        .build();
+    doNothing().when(exerciseActivityRepository).deleteById(exerciseActivityId);
+
+    ExerciseActivity expectedExerciseActivity = createExerciseActivity(exerciseActivityId);
 
     given(exerciseActivityConverter.convert(exerciseActivityEntity))
         .willReturn(expectedExerciseActivity);
 
-    ExerciseActivity actualExerciseActivity = workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId);
+    ExerciseActivity exerciseActivity = workoutDataService.deleteExerciseActivity(exerciseActivityId);
 
-    assertEquals(expectedExerciseActivity.getId(), actualExerciseActivity.getId());
-
-    verify(workoutRepository).findById(workoutId);
-    verify(workoutRepository).save(any(WorkoutEntity.class));
+    assertEquals(expectedExerciseActivity, exerciseActivity);
+    verify(exerciseActivityRepository).findById(exerciseActivityId);
+    verify(exerciseActivityRepository).deleteById(exerciseActivityId);
     verify(exerciseActivityConverter).convert(exerciseActivityEntity);
   }
 
@@ -426,6 +380,15 @@ public class WorkoutDataServiceTest {
     return ExerciseActivityEntity.builder()
         .id(exerciseActivityEntityId)
         .exercise(exerciseEntity)
+        .sets(Collections.emptyList())
+        .build();
+  }
+
+  private ExerciseActivity createExerciseActivity(long exerciseActivityId) {
+    Exercise exercise = createExercise();
+
+    return ExerciseActivity.builder()
+        .exercise(exercise)
         .sets(Collections.emptyList())
         .build();
   }

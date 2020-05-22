@@ -24,5 +24,5 @@ public interface IWorkoutDataService {
 
   ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException;
 
-  ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException;
+  ExerciseActivity deleteExerciseActivity(long exerciseActivityId) throws ExerciseActivityNotFoundException;
 }

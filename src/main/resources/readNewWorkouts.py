@@ -79,8 +79,8 @@ def generateWorkoutQueries(workouts):
 
         workoutType = getWorkoutType(workouts[workout])
 
-        addWorkoutQuery = "INSERT INTO WORKOUT_ENTITY (ID, NAME, NOTES, PERFORMED_AT_TIMESTAMP_UTC, WORKOUT_TYPE) " + \
-        "VALUES ({}, '{}', 'Notes', '{}', '{}');".format(workoutIndex, workout, workout, workoutType)
+        addWorkoutQuery = "INSERT INTO WORKOUT_ENTITY (ID, NOTES, PERFORMED_AT_TIMESTAMP_UTC, WORKOUT_TYPE) " + \
+        "VALUES ({}, 'Notes', '{}', '{}');".format(workoutIndex, workout, workoutType)
 
         print(addWorkoutQuery)
         queries.append(addWorkoutQuery)
@@ -94,8 +94,8 @@ def generateWorkoutQueries(workouts):
             calculatedExerciseActivityId = (
                 100 * workoutIndex) + exerciseActivityIndex
 
-            addExerciseActivityQuery = "INSERT INTO EXERCISE_ACTIVITY_ENTITY (ID, NOTES, EXERCISE_ID) " + \
-            "VALUES ({}, '', SELECT ID FROM EXERCISE_ENTITY WHERE NAME = '{}');".format(calculatedExerciseActivityId, exercise)
+            addExerciseActivityQuery = "INSERT INTO EXERCISE_ACTIVITY_ENTITY (ID, NOTES, EXERCISE_ID, WORKOUT_ID) " + \
+            "VALUES ({}, '', SELECT ID FROM EXERCISE_ENTITY WHERE NAME = '{}', {});".format(calculatedExerciseActivityId, exercise, workoutIndex)
 
             exerciseSets = exerciseActivity[exercise]
 
@@ -143,23 +143,23 @@ def generateWorkoutQueries(workouts):
 
                 status = 0 if set[3] == "COMPLETED" else 1
 
-                addSetQuery = "INSERT INTO EXERCISE_SET_ENTITY (SET_TYPE, ID, NUMBER_OF_REPS, STATUS , WEIGHT , WEIGHT_KG) " + \
-                    "VALUES ('{}', {}, {}, {}, {}, {});".format(setType, calculatedSetId, numberOfReps, status, weight, weightKg)
+                addSetQuery = "INSERT INTO EXERCISE_SET_ENTITY (SET_TYPE, ID, NUMBER_OF_REPS, STATUS , WEIGHT , WEIGHT_KG, EXERCISE_ACTIVITY_ID) " + \
+                    "VALUES ('{}', {}, {}, {}, {}, {}, {});".format(setType, calculatedSetId, numberOfReps, status, weight, weightKg, calculatedExerciseActivityId)
 
                 addExerciseActivityEntitySetsQuery = "INSERT INTO EXERCISE_ACTIVITY_ENTITY_SETS (EXERCISE_ACTIVITY_ENTITY_ID, SETS_ID) " + \
                     "VALUES ({}, {});".format(calculatedExerciseActivityId, calculatedSetId)
 
                 print(addSetQuery)
                 queries.append(addSetQuery)
-                print(addExerciseActivityEntitySetsQuery)
-                queries.append(addExerciseActivityEntitySetsQuery)
+                # print(addExerciseActivityEntitySetsQuery)
+                # queries.append(addExerciseActivityEntitySetsQuery)
 
 
             addWorkoutEntityExerciseActivityQuery = "INSERT INTO WORKOUT_ENTITY_EXERCISE_ACTIVITIES (WORKOUT_ENTITY_ID, EXERCISE_ACTIVITIES_ID) " + \
                 " VALUES ({}, {});".format(workoutIndex, calculatedExerciseActivityId)
 
-            print(addWorkoutEntityExerciseActivityQuery)
-            queries.append(addWorkoutEntityExerciseActivityQuery)
+            # print(addWorkoutEntityExerciseActivityQuery)
+            # queries.append(addWorkoutEntityExerciseActivityQuery)
 
         if workoutIndex == 3:
             pass

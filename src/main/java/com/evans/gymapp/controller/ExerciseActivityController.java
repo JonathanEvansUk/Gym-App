@@ -37,9 +37,9 @@ public class ExerciseActivityController {
   }
 
   @DeleteMapping("/workouts/{workoutId}/exerciseActivity/{exerciseActivityId}")
-  public ExerciseActivity deleteExerciseActivity(@PathVariable long workoutId, @PathVariable long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
+  public ExerciseActivity deleteExerciseActivity(@PathVariable long workoutId, @PathVariable long exerciseActivityId) throws ExerciseActivityNotFoundException {
 
     // TODO should this return nothing?
-    return workoutDataService.deleteExerciseActivity(workoutId, exerciseActivityId);
+    return workoutDataService.deleteExerciseActivity(exerciseActivityId);
   }
 }
