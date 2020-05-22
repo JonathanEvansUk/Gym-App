@@ -2,10 +2,11 @@ package com.evans.gymapp.domain.sets;
 
 import com.evans.gymapp.domain.Status;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-//@Data
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class WeightedSet extends ExerciseSet {
 
   private final Double weightKg;

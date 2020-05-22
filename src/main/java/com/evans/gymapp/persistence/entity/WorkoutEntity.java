@@ -11,7 +11,6 @@ import java.util.List;
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = WorkoutEntity.WORKOUT_EXERCISE_ACTIVITIES,
     attributeNodes = @NamedAttributeNode(value = "exerciseActivities",

@@ -343,7 +343,7 @@ public class WorkoutDataServiceTest {
 
     doNothing().when(exerciseActivityRepository).deleteById(exerciseActivityId);
 
-    ExerciseActivity expectedExerciseActivity = createExerciseActivity(exerciseActivityId);
+    ExerciseActivity expectedExerciseActivity = createExerciseActivity();
 
     given(exerciseActivityConverter.convert(exerciseActivityEntity))
         .willReturn(expectedExerciseActivity);
@@ -354,15 +354,6 @@ public class WorkoutDataServiceTest {
     verify(exerciseActivityRepository).findById(exerciseActivityId);
     verify(exerciseActivityRepository).deleteById(exerciseActivityId);
     verify(exerciseActivityConverter).convert(exerciseActivityEntity);
-  }
-
-  private Workout createWorkout() {
-    return Workout.builder()
-        .workoutType(WorkoutType.ABS)
-        .exerciseActivities(Collections.emptyList())
-        .performedAtTimestampUtc(Instant.now())
-        .notes("notes")
-        .build();
   }
 
   private WorkoutEntity createWorkoutEntity() {
@@ -384,16 +375,9 @@ public class WorkoutDataServiceTest {
         .build();
   }
 
-  private ExerciseActivity createExerciseActivity(long exerciseActivityId) {
+  private ExerciseActivity createExerciseActivity() {
     Exercise exercise = createExercise();
 
-    return ExerciseActivity.builder()
-        .exercise(exercise)
-        .sets(Collections.emptyList())
-        .build();
-  }
-
-  private ExerciseActivity createEmptyExerciseActivity(Exercise exercise) {
     return ExerciseActivity.builder()
         .exercise(exercise)
         .sets(Collections.emptyList())

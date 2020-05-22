@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Builder
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class ExerciseEntity {
 

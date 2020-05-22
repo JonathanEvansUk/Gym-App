@@ -12,7 +12,6 @@ import java.util.List;
 @Builder(toBuilder = true)
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class ExerciseActivityEntity {
 
