@@ -25,7 +25,7 @@ public class ExerciseActivityController {
 
   //TODO update this endpoint, and add constants
   @PatchMapping("/workouts/{workoutId}/updateSets")
-  public void updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) {
+  public void updateSets(@PathVariable long workoutId, @RequestBody ExerciseActivity exerciseActivity) throws ExerciseActivityNotFoundException {
     exerciseActivityDataService.updateSets(workoutId, exerciseActivity);
   }
 

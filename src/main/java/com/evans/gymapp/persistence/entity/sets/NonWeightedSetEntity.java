@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 @Getter
 @Entity
 @NoArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("NonWeightedSet")
 public class NonWeightedSetEntity extends ExerciseSetEntity {

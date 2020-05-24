@@ -6,11 +6,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@EqualsAndHashCode
+@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "set_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class ExerciseSetEntity {
@@ -19,6 +18,8 @@ public abstract class ExerciseSetEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @ManyToOne(fetch = FetchType.LAZY)
   private ExerciseActivityEntity exerciseActivity;
 

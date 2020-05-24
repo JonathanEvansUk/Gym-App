@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,8 +45,7 @@ public class ExerciseActivityControllerTest {
   private static final String TRICEP_PUSHDOWN = "Tricep Pushdown";
 
   @Test
-  public void updateSets() throws Exception {
-
+  public void updateSets_exerciseActivityNotFound() throws Exception {
     long workoutId = 1L;
 
     Exercise tricepPushdown = createExercise();
@@ -53,7 +53,33 @@ public class ExerciseActivityControllerTest {
     ExerciseActivity exerciseActivity = ExerciseActivity.builder()
         .exercise(tricepPushdown)
         .sets(Collections.emptyList())
+        .build();
 
+    String jsonRequest = objectMapper.writeValueAsString(exerciseActivity);
+
+    doThrow(ExerciseActivityNotFoundException.class)
+        .when(exerciseActivityDataService)
+        .updateSets(workoutId, exerciseActivity);
+
+    mockMvc.perform(patch("/workouts/{workoutId}/updateSets", workoutId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonRequest))
+        .andExpect(status().isNotFound())
+        .andReturn()
+        .getResponse();
+
+    verify(exerciseActivityDataService).updateSets(workoutId, exerciseActivity);
+  }
+
+  @Test
+  public void updateSets() throws Exception {
+    long workoutId = 1L;
+
+    Exercise tricepPushdown = createExercise();
+
+    ExerciseActivity exerciseActivity = ExerciseActivity.builder()
+        .exercise(tricepPushdown)
+        .sets(Collections.emptyList())
         .build();
 
     String jsonRequest = objectMapper.writeValueAsString(exerciseActivity);
@@ -62,8 +88,7 @@ public class ExerciseActivityControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(jsonRequest))
         .andExpect(status().isOk())
-        .andReturn()
-        .getResponse();
+        .andReturn();
 
     verify(exerciseActivityDataService).updateSets(workoutId, exerciseActivity);
   }
@@ -82,8 +107,7 @@ public class ExerciseActivityControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(jsonRequest))
         .andExpect(status().isNotFound())
-        .andReturn()
-        .getResponse();
+        .andReturn();
 
     verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
   }
@@ -103,8 +127,7 @@ public class ExerciseActivityControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(jsonRequest))
         .andExpect(status().isNotFound())
-        .andReturn()
-        .getResponse();
+        .andReturn();
 
     verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
   }
@@ -152,8 +175,7 @@ public class ExerciseActivityControllerTest {
         delete("/workouts/{workoutId}/exerciseActivity/{exerciseActivityId}", workoutId, exerciseActivityId)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
-        .andReturn()
-        .getResponse();
+        .andReturn();
 
     verify(workoutDataService).deleteExerciseActivity(exerciseActivityId);
   }

@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 @Getter
 @Entity
 @NoArgsConstructor
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue("WeightedSet")
 public class WeightedSetEntity extends ExerciseSetEntity {
