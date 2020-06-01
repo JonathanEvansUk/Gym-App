@@ -7,7 +7,6 @@ import com.evans.gymapp.exception.ExerciseActivityNotFoundException;
 import com.evans.gymapp.exception.ExerciseNotFoundException;
 import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.service.IExerciseActivityDataService;
-import com.evans.gymapp.service.IWorkoutDataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +36,6 @@ public class ExerciseActivityControllerTest {
 
   @MockBean
   private IExerciseActivityDataService exerciseActivityDataService;
-
-  // TODO remove this
-  @MockBean
-  private IWorkoutDataService workoutDataService;
 
   private static final String TRICEP_PUSHDOWN = "Tricep Pushdown";
 
@@ -98,7 +93,7 @@ public class ExerciseActivityControllerTest {
     long workoutId = 1L;
     long exerciseId = 1L;
 
-    given(workoutDataService.addExerciseActivity(workoutId, exerciseId))
+    given(exerciseActivityDataService.addExerciseActivity(workoutId, exerciseId))
         .willThrow(WorkoutNotFoundException.class);
 
     String jsonRequest = objectMapper.writeValueAsString(exerciseId);
@@ -109,7 +104,7 @@ public class ExerciseActivityControllerTest {
         .andExpect(status().isNotFound())
         .andReturn();
 
-    verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
+    verify(exerciseActivityDataService).addExerciseActivity(workoutId, exerciseId);
   }
 
   @Test
@@ -118,7 +113,7 @@ public class ExerciseActivityControllerTest {
     long workoutId = 1L;
     long exerciseId = 1L;
 
-    given(workoutDataService.addExerciseActivity(workoutId, exerciseId))
+    given(exerciseActivityDataService.addExerciseActivity(workoutId, exerciseId))
         .willThrow(ExerciseNotFoundException.class);
 
     String jsonRequest = objectMapper.writeValueAsString(exerciseId);
@@ -129,7 +124,7 @@ public class ExerciseActivityControllerTest {
         .andExpect(status().isNotFound())
         .andReturn();
 
-    verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
+    verify(exerciseActivityDataService).addExerciseActivity(workoutId, exerciseId);
   }
 
   @Test
@@ -143,7 +138,7 @@ public class ExerciseActivityControllerTest {
         .notes("test notes")
         .build();
 
-    given(workoutDataService.addExerciseActivity(workoutId, exerciseId))
+    given(exerciseActivityDataService.addExerciseActivity(workoutId, exerciseId))
         .willReturn(expectedExerciseActivity);
 
     String jsonRequest = objectMapper.writeValueAsString(exerciseId);
@@ -159,7 +154,7 @@ public class ExerciseActivityControllerTest {
 
     assertEquals(expectedExerciseActivity, exerciseActivity);
 
-    verify(workoutDataService).addExerciseActivity(workoutId, exerciseId);
+    verify(exerciseActivityDataService).addExerciseActivity(workoutId, exerciseId);
   }
 
   // TODO may need to update tests to see what exception details include
@@ -168,7 +163,7 @@ public class ExerciseActivityControllerTest {
     long workoutId = 1L;
     long exerciseActivityId = 1L;
 
-    given(workoutDataService.deleteExerciseActivity(exerciseActivityId))
+    given(exerciseActivityDataService.deleteExerciseActivity(workoutId, exerciseActivityId))
         .willThrow(ExerciseActivityNotFoundException.class);
 
     mockMvc.perform(
@@ -177,7 +172,7 @@ public class ExerciseActivityControllerTest {
         .andExpect(status().isNotFound())
         .andReturn();
 
-    verify(workoutDataService).deleteExerciseActivity(exerciseActivityId);
+    verify(exerciseActivityDataService).deleteExerciseActivity(workoutId, exerciseActivityId);
   }
 
   @Test
@@ -192,7 +187,7 @@ public class ExerciseActivityControllerTest {
         .notes("test")
         .build();
 
-    given(workoutDataService.deleteExerciseActivity(exerciseActivityId))
+    given(exerciseActivityDataService.deleteExerciseActivity(workoutId, exerciseActivityId))
         .willReturn(expectedExerciseActivity);
 
     MockHttpServletResponse response = mockMvc.perform(
@@ -206,7 +201,7 @@ public class ExerciseActivityControllerTest {
 
     assertEquals(expectedExerciseActivity, exerciseActivity);
 
-    verify(workoutDataService).deleteExerciseActivity(exerciseActivityId);
+    verify(exerciseActivityDataService).deleteExerciseActivity(workoutId, exerciseActivityId);
   }
 
   private Exercise createExercise() {

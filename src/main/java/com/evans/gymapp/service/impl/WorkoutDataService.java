@@ -1,20 +1,12 @@
 package com.evans.gymapp.service.impl;
 
-import com.evans.gymapp.domain.ExerciseActivity;
 import com.evans.gymapp.domain.Workout;
-import com.evans.gymapp.exception.ExerciseActivityNotFoundException;
-import com.evans.gymapp.exception.ExerciseNotFoundException;
 import com.evans.gymapp.exception.WorkoutNotFoundException;
-import com.evans.gymapp.persistence.entity.ExerciseActivityEntity;
-import com.evans.gymapp.persistence.entity.ExerciseEntity;
 import com.evans.gymapp.persistence.entity.WorkoutEntity;
-import com.evans.gymapp.persistence.repository.ExerciseActivityRepository;
-import com.evans.gymapp.persistence.repository.ExerciseRepository;
 import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
 import com.evans.gymapp.service.IWorkoutDataService;
-import com.evans.gymapp.util.converter.ExerciseActivityConverter;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -34,17 +26,7 @@ public class WorkoutDataService implements IWorkoutDataService {
   private final WorkoutRepository workoutRepository;
 
   @NonNull
-  //TODO remove this?
-  private final ExerciseRepository exerciseRepository;
-
-  @NonNull
-  private final ExerciseActivityRepository exerciseActivityRepository;
-
-  @NonNull
   private final WorkoutConverter workoutConverter;
-
-  @NonNull
-  private final ExerciseActivityConverter exerciseActivityConverter;
 
   @Override
   //TODO maybe return boolean to indicate successful creation?
@@ -101,40 +83,6 @@ public class WorkoutDataService implements IWorkoutDataService {
     return workoutRepository.findById(workoutId)
         .map(workoutConverter::convert)
         .orElseThrow(ResourceNotFoundException::new);
-  }
-
-  @Override
-  public ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException {
-    // TODO change message in exception
-    ExerciseEntity exercise = exerciseRepository.findById(exerciseId)
-        .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
-
-    // TODO change message in exception
-    WorkoutEntity workout = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
-
-    ExerciseActivityEntity newExerciseActivity = createNewExerciseActivity(exercise, workout);
-
-    return exerciseActivityConverter.convert(exerciseActivityRepository.save(newExerciseActivity));
-  }
-
-  @Override
-  public ExerciseActivity deleteExerciseActivity(long exerciseActivityId) throws ExerciseActivityNotFoundException {
-    // TODO change message in exception
-    ExerciseActivityEntity exerciseActivity = exerciseActivityRepository.findById(exerciseActivityId)
-        .orElseThrow(() -> new ExerciseActivityNotFoundException("exercise activity not found"));
-
-    exerciseActivityRepository.deleteById(exerciseActivityId);
-
-    return exerciseActivityConverter.convert(exerciseActivity);
-  }
-
-  private ExerciseActivityEntity createNewExerciseActivity(ExerciseEntity exercise, WorkoutEntity workout) {
-    return ExerciseActivityEntity.builder()
-        .exercise(exercise)
-        .workout(workout)
-        .sets(Collections.emptyList())
-        .build();
   }
 
   public static class ResourceNotFoundException extends RuntimeException {

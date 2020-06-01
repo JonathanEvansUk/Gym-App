@@ -39,4 +39,18 @@ public class WorkoutEntity {
   private Instant performedAtTimestampUtc;
 
   private String notes;
+
+  public void addExerciseActivity(ExerciseActivityEntity exerciseActivity) {
+    exerciseActivities.add(exerciseActivity);
+    exerciseActivity.setWorkout(this);
+  }
+
+  public void removeExerciseActivity(ExerciseActivityEntity exerciseActivity) {
+    exerciseActivities.remove(exerciseActivity);
+    exerciseActivity.setWorkout(null);
+  }
+
+  public ExerciseActivityEntity getLastExerciseActivity() {
+    return exerciseActivities.get(exerciseActivities.size() - 1);
+  }
 }

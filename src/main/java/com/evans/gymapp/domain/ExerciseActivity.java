@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -14,6 +15,8 @@ public class ExerciseActivity {
 
   private final Long id;
   private final Exercise exercise;
+
+  @NotNull
   private final List<ExerciseSet> sets;
   private final String notes;
 }
