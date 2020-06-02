@@ -18,11 +18,12 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class WorkoutRepositoryTest {
@@ -43,6 +44,46 @@ public class WorkoutRepositoryTest {
   @BeforeEach
   public void addBicepCurl() {
     exerciseRepository.save(BICEP_CURL);
+  }
+
+  @Test
+  public void save_thenFindById() {
+    WorkoutEntity workout = createPopulatedWorkout();
+
+    WorkoutEntity savedWorkout = workoutRepository.save(workout);
+
+    assertEquals(workout, savedWorkout);
+
+    Optional<WorkoutEntity> byId = workoutRepository.findById(savedWorkout.getId());
+
+    assertTrue(byId.isPresent());
+    assertEquals(workout, byId.get());
+  }
+
+  @Test
+  public void findAll() {
+    IntStream.range(0, 3)
+        .mapToObj(i -> createPopulatedWorkout())
+        .forEach(workoutRepository::save);
+
+    List<WorkoutEntity> allWorkouts = workoutRepository.findAll();
+
+    assertEquals(3, allWorkouts.size());
+  }
+
+  @Test
+  public void delete() {
+    WorkoutEntity workout = createPopulatedWorkout();
+
+    WorkoutEntity savedWorkout = workoutRepository.save(workout);
+
+    Optional<WorkoutEntity> byId = workoutRepository.findById(savedWorkout.getId());
+    assertTrue(byId.isPresent());
+
+    workoutRepository.delete(workout);
+
+    Optional<WorkoutEntity> byIdPostDelete = workoutRepository.findById(savedWorkout.getId());
+    assertFalse(byIdPostDelete.isPresent());
   }
 
   @Test
@@ -68,9 +109,16 @@ public class WorkoutRepositoryTest {
     assertThat(savedSets.get(1), instanceOf(NonWeightedSetEntity.class));
   }
 
+  private WorkoutEntity createPopulatedWorkout() {
+    List<ExerciseSetEntity> sets = Arrays.asList(createNonWeightedSet(), createWeightedSet());
+
+    ExerciseActivityEntity exerciseActivity = createExerciseActivity(sets);
+
+    return createWorkout(exerciseActivity);
+  }
+
   private WorkoutEntity createWorkout(ExerciseActivityEntity exerciseActivityEntity) {
     return WorkoutEntity.builder()
-        .id(1L)
         .workoutType(WorkoutType.PULL)
         .performedAtTimestampUtc(Instant.now())
         .exerciseActivities(Collections.singletonList(exerciseActivityEntity))
@@ -80,7 +128,6 @@ public class WorkoutRepositoryTest {
 
   private ExerciseActivityEntity createExerciseActivity(List<ExerciseSetEntity> sets) {
     return ExerciseActivityEntity.builder()
-        .id(1L)
         .exercise(BICEP_CURL)
         .sets(sets)
         .notes("Notes")
