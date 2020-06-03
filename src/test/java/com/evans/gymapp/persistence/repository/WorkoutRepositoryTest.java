@@ -34,16 +34,21 @@ public class WorkoutRepositoryTest {
   @Autowired
   private ExerciseRepository exerciseRepository;
 
-  private static final ExerciseEntity BICEP_CURL = ExerciseEntity.builder()
-      .id(1L)
-      .muscleGroup(MuscleGroup.BICEP)
-      .name("Bicep Curl")
-      .information("Information")
-      .build();
+  private ExerciseEntity bicepCurl;
 
   @BeforeEach
   public void addBicepCurl() {
-    exerciseRepository.save(BICEP_CURL);
+    bicepCurl = createBicepCurl();
+
+    exerciseRepository.save(bicepCurl);
+  }
+
+  private ExerciseEntity createBicepCurl() {
+    return ExerciseEntity.builder()
+        .muscleGroup(MuscleGroup.BICEP)
+        .name("Bicep Curl")
+        .information("Information")
+        .build();
   }
 
   @Test
@@ -128,7 +133,7 @@ public class WorkoutRepositoryTest {
 
   private ExerciseActivityEntity createExerciseActivity(List<ExerciseSetEntity> sets) {
     return ExerciseActivityEntity.builder()
-        .exercise(BICEP_CURL)
+        .exercise(bicepCurl)
         .sets(sets)
         .notes("Notes")
         .build();
