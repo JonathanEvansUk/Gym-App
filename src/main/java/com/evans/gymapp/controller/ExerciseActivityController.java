@@ -12,29 +12,31 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.evans.gymapp.util.EndpointConstants.*;
+
 @Slf4j
 @CrossOrigin
 @RestController
+@RequestMapping(WORKOUT_BY_ID)
 @RequiredArgsConstructor
 public class ExerciseActivityController {
 
   @NonNull
   private final IExerciseActivityDataService exerciseActivityDataService;
 
-  //TODO update this endpoint, and add constants
-  @PatchMapping("/workouts/{workoutId}/updateSets")
+  @PatchMapping(UPDATE_SETS)
   public void updateSets(@PathVariable long workoutId, @Valid @RequestBody ExerciseActivity exerciseActivity) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
     exerciseActivityDataService.updateSets(workoutId, exerciseActivity);
   }
 
-  @PostMapping("/workouts/{workoutId}/addExerciseActivity")
+  @PostMapping(ADD_EXERCISE_ACTIVITY)
   public ExerciseActivity addExerciseActivity(@PathVariable long workoutId, @RequestBody long exerciseId) throws WorkoutNotFoundException, ExerciseNotFoundException {
     log.info("Add exercise activity request received");
 
     return exerciseActivityDataService.addExerciseActivity(workoutId, exerciseId);
   }
 
-  @DeleteMapping("/workouts/{workoutId}/exerciseActivity/{exerciseActivityId}")
+  @DeleteMapping(DELETE_EXERCISE_ACTIVITY)
   public ExerciseActivity deleteExerciseActivity(@PathVariable long workoutId, @PathVariable long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
 
     // TODO should this return nothing?
