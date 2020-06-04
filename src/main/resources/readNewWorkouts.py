@@ -66,8 +66,8 @@ def is_number(s):
 
 def generateExerciseQueries(exercises):
     for index, exercise in enumerate(exercises):
-        addExerciseQuery = "INSERT INTO EXERCISE_ENTITY (ID, INFORMATION, MUSCLE_GROUP, NAME) " + \
-        "VALUES ({}, '{}', 'BICEP', '{}');".format(index, exercise, exercise)
+        addExerciseQuery = "INSERT INTO EXERCISE_ENTITY (INFORMATION, MUSCLE_GROUP, NAME) " + \
+        "VALUES ('{}', 'BICEP', '{}');".format(exercise, exercise)
 
         print(addExerciseQuery)
 
@@ -80,7 +80,7 @@ def generateWorkoutQueries(workouts):
         workoutType = getWorkoutType(workouts[workout])
 
         addWorkoutQuery = "INSERT INTO WORKOUT_ENTITY (ID, NOTES, PERFORMED_AT_TIMESTAMP_UTC, WORKOUT_TYPE) " + \
-        "VALUES ({}, 'Notes', '{}', '{}');".format(workoutIndex, workout, workoutType)
+        "VALUES ({}, 'Notes', '{}', '{}');".format(workoutIndex + 1, workout, workoutType)
 
         print(addWorkoutQuery)
         queries.append(addWorkoutQuery)
@@ -92,10 +92,10 @@ def generateWorkoutQueries(workouts):
         for exerciseActivityIndex, exercise in enumerate(exerciseActivity):
 
             calculatedExerciseActivityId = (
-                100 * workoutIndex) + exerciseActivityIndex
+                100 * (workoutIndex + 1)) + exerciseActivityIndex
 
             addExerciseActivityQuery = "INSERT INTO EXERCISE_ACTIVITY_ENTITY (ID, NOTES, EXERCISE_ID, WORKOUT_ID) " + \
-            "VALUES ({}, '', SELECT ID FROM EXERCISE_ENTITY WHERE NAME = '{}', {});".format(calculatedExerciseActivityId, exercise, workoutIndex)
+            "VALUES ({}, '', (SELECT ID FROM EXERCISE_ENTITY WHERE NAME = '{}'), {});".format(calculatedExerciseActivityId, exercise, workoutIndex + 1)
 
             exerciseSets = exerciseActivity[exercise]
 
@@ -156,7 +156,7 @@ def generateWorkoutQueries(workouts):
 
 
             addWorkoutEntityExerciseActivityQuery = "INSERT INTO WORKOUT_ENTITY_EXERCISE_ACTIVITIES (WORKOUT_ENTITY_ID, EXERCISE_ACTIVITIES_ID) " + \
-                " VALUES ({}, {});".format(workoutIndex, calculatedExerciseActivityId)
+                " VALUES ({}, {});".format(workoutIndex + 1, calculatedExerciseActivityId)
 
             # print(addWorkoutEntityExerciseActivityQuery)
             # queries.append(addWorkoutEntityExerciseActivityQuery)
