@@ -2,14 +2,12 @@ package com.evans.gymapp.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
-@RequiredArgsConstructor
 public class Workout {
 
   private final Long id;
