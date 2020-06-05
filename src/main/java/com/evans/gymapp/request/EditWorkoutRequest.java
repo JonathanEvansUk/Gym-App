@@ -1,14 +1,14 @@
 package com.evans.gymapp.request;
 
 import com.evans.gymapp.domain.WorkoutType;
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 
 import java.time.Instant;
 
-@Getter
+@Value
 @Builder
-@EqualsAndHashCode
-@RequiredArgsConstructor
 public class EditWorkoutRequest {
 
   @NonNull

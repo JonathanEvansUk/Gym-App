@@ -25,6 +25,8 @@ public class WorkoutTypeController {
   // TODO maybe this should be removed and replaced with consolidated calls
   @GetMapping
   public WorkoutType[] getWorkoutTypes() {
+    log.info("Received get workout types request");
+
     return workoutTypeService.getWorkoutTypes();
   }
 }
