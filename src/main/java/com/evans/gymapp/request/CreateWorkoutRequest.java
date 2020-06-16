@@ -2,18 +2,18 @@ package com.evans.gymapp.request;
 
 import com.evans.gymapp.domain.WorkoutType;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Value;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Value
 @Builder
 public class CreateWorkoutRequest {
 
-  @NonNull
+  @NotNull
   private final WorkoutType workoutType;
 
-  @NonNull
+  @NotNull
   private final Instant performedAtTimestampUtc;
 }

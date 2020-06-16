@@ -112,7 +112,6 @@ public class WorkoutDataServiceTest {
     given(workoutRepository.findById(workoutId))
         .willReturn(Optional.of(currentlyStoredWorkout));
 
-
     WorkoutEntity updatedWorkoutEntity = createWorkoutEntity().toBuilder()
         .workoutType(WorkoutType.ABS)
         .performedAtTimestampUtc(now)
