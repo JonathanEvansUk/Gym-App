@@ -171,7 +171,7 @@ public class WorkoutIntegrationTest extends IntegrationTest {
   @Test
   public void editWorkout() {
     WorkoutEntity savedWorkout = workoutRepository.save(createWorkout());
-    long workoutId = savedWorkout.getId();
+    Long workoutId = savedWorkout.getId();
 
     EditWorkoutRequest request = EditWorkoutRequest.builder()
         .workoutType(WorkoutType.PULL)

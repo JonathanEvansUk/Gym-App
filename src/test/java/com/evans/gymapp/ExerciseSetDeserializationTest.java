@@ -41,10 +41,10 @@ public class ExerciseSetDeserializationTest {
     assertThat(exerciseSet, instanceOf(WeightedSet.class));
 
     WeightedSet weightedSet = (WeightedSet) exerciseSet;
-    assertEquals(1, weightedSet.getId());
-    assertEquals(12, weightedSet.getNumberOfReps());
+    assertEquals(Long.valueOf(1), weightedSet.getId());
+    assertEquals(Integer.valueOf(12), weightedSet.getNumberOfReps());
     assertEquals(Status.COMPLETED, weightedSet.getStatus());
-    assertEquals(10D, weightedSet.getWeightKg());
+    assertEquals(Double.valueOf(10D), weightedSet.getWeightKg());
   }
 
   @Test
@@ -56,8 +56,8 @@ public class ExerciseSetDeserializationTest {
     assertThat(exerciseSet, instanceOf(NonWeightedSet.class));
 
     NonWeightedSet nonWeightedSet = (NonWeightedSet) exerciseSet;
-    assertEquals(1, nonWeightedSet.getId());
-    assertEquals(12, nonWeightedSet.getNumberOfReps());
+    assertEquals(Long.valueOf(1L), nonWeightedSet.getId());
+    assertEquals(Integer.valueOf(12), nonWeightedSet.getNumberOfReps());
     assertEquals(Status.COMPLETED, nonWeightedSet.getStatus());
     assertEquals("redBand", nonWeightedSet.getWeight());
   }
