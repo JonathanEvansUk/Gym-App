@@ -41,7 +41,7 @@ public class WorkoutDataService implements IWorkoutDataService {
   @Override
   public Workout editWorkout(long workoutId, EditWorkoutRequest request) throws WorkoutNotFoundException {
     WorkoutEntity workoutEntity = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
     // TODO should this be in a converter?
     WorkoutEntity updatedWorkoutEntity = workoutEntity.toBuilder()
@@ -57,7 +57,7 @@ public class WorkoutDataService implements IWorkoutDataService {
   @Override
   public void deleteWorkout(long workoutId) throws WorkoutNotFoundException {
     WorkoutEntity workoutToDelete = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
     workoutRepository.delete(workoutToDelete);
   }
@@ -79,12 +79,9 @@ public class WorkoutDataService implements IWorkoutDataService {
   }
 
   @Override
-  public Workout getWorkoutById(long workoutId) {
+  public Workout getWorkoutById(long workoutId) throws WorkoutNotFoundException {
     return workoutRepository.findById(workoutId)
         .map(workoutConverter::convert)
-        .orElseThrow(ResourceNotFoundException::new);
-  }
-
-  public static class ResourceNotFoundException extends RuntimeException {
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
   }
 }

@@ -17,5 +17,5 @@ public interface IWorkoutDataService {
 
   List<Workout> getAllWorkouts();
 
-  Workout getWorkoutById(long workoutId);
+  Workout getWorkoutById(long workoutId) throws WorkoutNotFoundException;
 }

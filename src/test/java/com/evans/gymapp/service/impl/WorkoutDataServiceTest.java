@@ -8,7 +8,6 @@ import com.evans.gymapp.persistence.repository.WorkoutRepository;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
 import com.evans.gymapp.service.IWorkoutDataService;
-import com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
 import com.evans.gymapp.util.converter.WorkoutConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -201,14 +200,14 @@ public class WorkoutDataServiceTest {
     given(workoutRepository.findById(1L))
         .willReturn(Optional.empty());
 
-    assertThrows(ResourceNotFoundException.class, () -> workoutDataService.getWorkoutById(1L));
+    assertThrows(WorkoutNotFoundException.class, () -> workoutDataService.getWorkoutById(1L));
 
     verify(workoutRepository).findById(1L);
     verifyZeroInteractions(workoutConverter);
   }
 
   @Test
-  public void getWorkoutById() {
+  public void getWorkoutById() throws WorkoutNotFoundException {
     WorkoutEntity workoutEntity = createWorkoutEntity();
 
     given(workoutRepository.findById(1L))

@@ -1,11 +1,10 @@
 package com.evans.gymapp.exception;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+public class WorkoutNotFoundException extends ResourceNotFoundException {
 
-@RequiredArgsConstructor
-public class WorkoutNotFoundException extends Exception {
+  private static final String WORKOUT = "Workout";
 
-  @NonNull
-  private final String message;
+  public WorkoutNotFoundException(long resourceId) {
+    super(WORKOUT, resourceId);
+  }
 }

@@ -43,13 +43,11 @@ public class ExerciseActivityDataService implements IExerciseActivityDataService
   @Override
   // TODO decide if this is a better approach?
   public ExerciseActivity addExerciseActivity(long workoutId, long exerciseId) throws ExerciseNotFoundException, WorkoutNotFoundException {
-    // TODO change message in exception
     ExerciseEntity exercise = exerciseRepository.findById(exerciseId)
-        .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
+        .orElseThrow(() -> new ExerciseNotFoundException(exerciseId));
 
-    // TODO change message in exception
     WorkoutEntity workout = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
     ExerciseActivityEntity newExerciseActivity = createNewExerciseActivity(exercise);
 
@@ -73,16 +71,15 @@ public class ExerciseActivityDataService implements IExerciseActivityDataService
 
   @Override
   public ExerciseActivity deleteExerciseActivity(long workoutId, long exerciseActivityId) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
-    // TODO change message in exception
     WorkoutEntity workout = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException("workout not found"));
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
     ExerciseActivityEntity exerciseActivityEntity = workout.getExerciseActivities()
         .stream()
         .filter(exerciseActivity -> exerciseActivity.getId() != null)
         .filter(exerciseActivity -> exerciseActivity.getId().equals(exerciseActivityId))
         .findFirst()
-        .orElseThrow(() -> new ExerciseActivityNotFoundException(""));
+        .orElseThrow(() -> new ExerciseActivityNotFoundException(exerciseActivityId));
 
     workout.removeExerciseActivity(exerciseActivityEntity);
 
@@ -94,14 +91,14 @@ public class ExerciseActivityDataService implements IExerciseActivityDataService
   @Override
   public void updateSets(long workoutId, ExerciseActivity exerciseActivity) throws WorkoutNotFoundException, ExerciseActivityNotFoundException {
     WorkoutEntity workout = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new WorkoutNotFoundException(""));
+        .orElseThrow(() -> new WorkoutNotFoundException(workoutId));
 
     ExerciseActivityEntity exerciseActivityEntity = workout.getExerciseActivities()
         .stream()
         .filter(existingExerciseActivity -> existingExerciseActivity.getId() != null)
         .filter(existingExerciseActivity -> existingExerciseActivity.getId().equals(exerciseActivity.getId()))
         .findFirst()
-        .orElseThrow(() -> new ExerciseActivityNotFoundException(""));
+        .orElseThrow(() -> new ExerciseActivityNotFoundException(exerciseActivity.getId()));
 
     List<ExerciseSetEntity> convertedSets = exerciseActivity.getSets().stream()
         .map(exerciseSetConverter::convert)

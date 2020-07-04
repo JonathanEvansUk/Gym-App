@@ -34,7 +34,7 @@ public class ExerciseDataService implements IExerciseDataService {
   @Override
   public Exercise getExerciseById(long exerciseId) throws ExerciseNotFoundException {
     ExerciseEntity exerciseEntity = exerciseRepository.findById(exerciseId)
-        .orElseThrow(() -> new ExerciseNotFoundException("exercise not found"));
+        .orElseThrow(() -> new ExerciseNotFoundException(exerciseId));
 
     return exerciseConverter.convert(exerciseEntity);
   }

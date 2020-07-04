@@ -5,10 +5,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class WeightedSet extends ExerciseSet {
 
+  @NotNull
   private final Double weightKg;
 
   @Builder

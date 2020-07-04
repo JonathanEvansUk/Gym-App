@@ -6,6 +6,7 @@ import com.evans.gymapp.exception.WorkoutNotFoundException;
 import com.evans.gymapp.request.CreateWorkoutRequest;
 import com.evans.gymapp.request.EditWorkoutRequest;
 import com.evans.gymapp.service.IWorkoutDataService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import static com.evans.gymapp.service.impl.WorkoutDataService.ResourceNotFoundException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.BDDMockito.*;
@@ -38,6 +41,11 @@ public class WorkoutControllerTest {
 
   @MockBean
   private IWorkoutDataService workoutDataService;
+
+  private static final TypeReference<Map<String, String>> MAP_STRING_STRING_TYPE = new TypeReference<Map<String, String>>() {
+  };
+
+  private static final String MUST_NOT_BE_NULL = "must not be null";
 
   @Test
   public void getAllWorkouts() throws Exception {
@@ -68,13 +76,15 @@ public class WorkoutControllerTest {
 
   @Test
   public void getWorkoutById_noWorkout() throws Exception {
-    given(workoutDataService.getWorkoutById(1L))
-        .willThrow(new ResourceNotFoundException());
+    long workoutId = 1L;
 
-    mockMvc.perform(get("/workouts/{workoutId}", 1L))
+    given(workoutDataService.getWorkoutById(workoutId))
+        .willThrow(new WorkoutNotFoundException(workoutId));
+
+    mockMvc.perform(get("/workouts/{workoutId}", workoutId))
         .andExpect(status().isNotFound());
 
-    verify(workoutDataService).getWorkoutById(1L);
+    verify(workoutDataService).getWorkoutById(workoutId);
   }
 
   @Test
@@ -101,6 +111,31 @@ public class WorkoutControllerTest {
     assertEquals(workout, workoutById);
 
     verify(workoutDataService).getWorkoutById(1L);
+  }
+
+  @Test
+  public void addWorkout_invalidRequest() throws Exception {
+    CreateWorkoutRequest request = CreateWorkoutRequest.builder()
+        .workoutType(null)
+        .performedAtTimestampUtc(null)
+        .build();
+
+    String jsonRequest = objectMapper.writeValueAsString(request);
+
+    MockHttpServletResponse response = mockMvc.perform(post("/workouts/")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonRequest))
+        .andExpect(status().isBadRequest())
+        .andReturn()
+        .getResponse();
+
+    Map<String, String> errors = objectMapper.readValue(response.getContentAsString(), MAP_STRING_STRING_TYPE);
+
+    assertEquals(2, errors.size());
+    assertThat(errors, hasEntry("workoutType", MUST_NOT_BE_NULL));
+    assertThat(errors, hasEntry("performedAtTimestampUtc", MUST_NOT_BE_NULL));
+
+    verifyZeroInteractions(workoutDataService);
   }
 
   @Test
@@ -138,6 +173,33 @@ public class WorkoutControllerTest {
   }
 
   @Test
+  public void editWorkout_invalidRequest() throws Exception {
+    long workoutId = 1L;
+
+    EditWorkoutRequest request = EditWorkoutRequest.builder()
+        .workoutType(null)
+        .performedAtTimestampUtc(null)
+        .build();
+
+    String jsonRequest = objectMapper.writeValueAsString(request);
+
+    MockHttpServletResponse response = mockMvc.perform(patch("/workouts/{workoutId}", workoutId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(jsonRequest))
+        .andExpect(status().isBadRequest())
+        .andReturn()
+        .getResponse();
+
+    Map<String, String> errors = objectMapper.readValue(response.getContentAsString(), MAP_STRING_STRING_TYPE);
+
+    assertEquals(2, errors.size());
+    assertThat(errors, hasEntry("workoutType", MUST_NOT_BE_NULL));
+    assertThat(errors, hasEntry("performedAtTimestampUtc", MUST_NOT_BE_NULL));
+
+    verifyZeroInteractions(workoutDataService);
+  }
+
+  @Test
   public void editWorkout_workoutNotFound() throws Exception {
     long workoutId = 1L;
 
@@ -149,7 +211,7 @@ public class WorkoutControllerTest {
     String jsonRequest = objectMapper.writeValueAsString(editWorkoutRequest);
 
     given(workoutDataService.editWorkout(workoutId, editWorkoutRequest))
-        .willThrow(new WorkoutNotFoundException("test message"));
+        .willThrow(new WorkoutNotFoundException(workoutId));
 
     mockMvc.perform(patch("/workouts/{workoutId}", workoutId)
         .contentType(MediaType.APPLICATION_JSON)
@@ -201,7 +263,7 @@ public class WorkoutControllerTest {
   public void deleteWorkout_workoutNotFound() throws Exception {
     long workoutId = 1L;
 
-    willThrow(new WorkoutNotFoundException("test message"))
+    willThrow(new WorkoutNotFoundException(workoutId))
         .given(workoutDataService).deleteWorkout(workoutId);
 
     mockMvc.perform(delete("/workouts/{workoutId}", workoutId)

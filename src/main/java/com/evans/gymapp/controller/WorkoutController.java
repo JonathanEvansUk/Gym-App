@@ -35,7 +35,7 @@ public class WorkoutController {
   }
 
   @GetMapping(WORKOUT_ID)
-  public Workout getWorkoutById(@PathVariable long workoutId) {
+  public Workout getWorkoutById(@PathVariable long workoutId) throws WorkoutNotFoundException {
     log.info("Get workout by id request received: workoutId: {}", workoutId);
 
     return workoutDataService.getWorkoutById(workoutId);
